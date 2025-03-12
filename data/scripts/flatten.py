@@ -2,8 +2,15 @@ import os
 import shutil
 import json
 
-root = "../lmd_matched"
-new_root = "../lmd_matched_flat"
+print("Flattening the dataset")
+
+root = "./midi/lmd_matched"
+
+if not os.path.exists(root):
+    print("Source directory not found.")
+    [][0]
+
+new_root = "./midi/lmd_matched_flat"
 
 os.makedirs(new_root)
 
