@@ -4,6 +4,7 @@ set -e
 
 
 mkdir -p archives
+mkdir -p results
 
 
 # Folders in tar

@@ -53,7 +53,7 @@ for root, folders, files in os.walk(root):
         # print("[COPY] root: {} | folders: {} | file: {}".format(root, folders, file))
 
 if True:
-    with open("../tracks.json", "w") as tracks_file:
+    with open("results/tracks.json", "w") as tracks_file:
         json.dump(tracks, tracks_file)
-    with open("../versions.json", "w") as versions_file:
+    with open("results/versions.json", "w") as versions_file:
         json.dump(versions, versions_file)
