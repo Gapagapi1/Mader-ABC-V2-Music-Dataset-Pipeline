@@ -1,5 +1,12 @@
 **/.ipynb_checkpoints
+
 data/midi
 data/genre
 data/archives
 data/results
+
+data/softwares/*
+!data/softwares/.gitkeep
+
+data/scripts/musescore
+data/jobs_*

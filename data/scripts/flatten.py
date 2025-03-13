@@ -1,16 +1,17 @@
 import os
-import shutil
+import sys
 import json
-
-print("Flattening the dataset")
+import shutil
 
 root = "./midi/lmd_matched"
-
 if not os.path.exists(root):
     print("Source directory not found.")
-    [][0]
+    sys.exit(1)
 
 new_root = "./midi/lmd_matched_flat"
+
+
+print("Flattening the dataset of midi files.")
 
 os.makedirs(new_root)
 
