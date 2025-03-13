@@ -51,12 +51,14 @@ def squash_tracks_ids():
 
     This function create all_tracks.txt
     """
+    print("Start retreiving all tracks and their genre from the different databases.")
     tracks = get_all_matched_tracks(files_genre)
     tracks_str = ""
     for key in tracks.keys():
         tracks_str += key + " " + " ".join(tracks[key]) + "\n"
     with open("results/all_tracks.txt", "w") as f:
         f.write(tracks_str)
+    print("Finished task")
 
 def single_file_tracks_ids():
     """
@@ -85,11 +87,13 @@ def check_lmd_tracks():
 
     This function create lmd_tracks.txt
     """
+    print("Start retreiving all tracks from the lmd database.")
     all_tracks = set() 
     for track in listdir("midi/lmd_matched_flat"):
         all_tracks.add(track)
     with open("results/lmd_tracks.txt", "w") as f:
         f.write('\n'.join(all_tracks))
+    print("Finished task")
 
 def check_diff(metadata_file_name:str="all_tracks", source_file_name:str="lmd_tracks"):
     """
@@ -101,6 +105,7 @@ def check_diff(metadata_file_name:str="all_tracks", source_file_name:str="lmd_tr
 
     This function create `metadata_file_name`_diff.txt
     """
+    print("Start checking the intersection between the " + metadata_file_name + " and the " + source_file_name)
     metadata = open("results/" + metadata_file_name + ".txt", "r")
     lmd = open("results/" + source_file_name + ".txt", "r")
     metadata_tracks = {}
@@ -123,6 +128,7 @@ def check_diff(metadata_file_name:str="all_tracks", source_file_name:str="lmd_tr
 
     with open("results/diff/" + metadata_file_name + ".txt", "w") as f:
         f.write('\n'.join(results))
+    print("Finished task")
 
 def check_diff_each_file():
     """
@@ -132,6 +138,7 @@ def check_diff_each_file():
         check_diff(file)
 
 def get_genres(file_path:str="all_tracks.txt"):
+    print("Start checking the count of the different genres of " + file_path)
     file = open("results/diff/" + file_path, "r")
     all_genres = {}
     for track in file:
@@ -146,19 +153,18 @@ def get_genres(file_path:str="all_tracks.txt"):
 
     with open("results/genres/" + file_path, "w") as f:
         f.write('\n'.join(items[0] + " " + str(items[1]) for items in sorted(all_genres.items(), key=lambda x: x[1], reverse=True)))
-    return
+    print("Finished task")
 
 def sort_matched_tracks():
     """
-    Delete all the tracks where we couldn't have genre.
+    Copy all the tracks where we have genre.
     """
+    print("Start coping file where we have the genre")
     matched = open("results/diff/all_tracks.txt", "r")
     matched_tracks = set()
 
     for track in matched:
         matched_tracks.add(track.split(" ")[0])
-    
-    print(matched_tracks)
 
     if (not path.exists("midi/lmd_matched_genre")):
         mkdir("midi/lmd_matched_genre")
@@ -170,9 +176,10 @@ def sort_matched_tracks():
 
             for file in listdir("midi/lmd_matched_flat/" + track):
                 copy2("midi/lmd_matched_flat/" + track + "/" + file, "midi/lmd_matched_genre/" + track + "/" + file)
+    print("Finished task")
 
-# single_file_tracks_ids()
-# check_lmd_tracks()
-# check_diff_each_file()
-# get_genres()
+squash_tracks_ids()
+check_lmd_tracks()
+check_diff()
+get_genres()
 sort_matched_tracks()
