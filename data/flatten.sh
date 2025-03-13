@@ -2,4 +2,4 @@
 
 set -e
 
-python scripts/flatten.py
+python3 scripts/flatten.py
