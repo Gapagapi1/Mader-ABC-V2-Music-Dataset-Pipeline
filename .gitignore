@@ -3,7 +3,9 @@
 data/midi
 data/genre
 data/archives
-data/results
+
+data/results/*
+!data/results/.gitkeep
 
 data/softwares/*
 !data/softwares/.gitkeep
