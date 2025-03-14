@@ -5,3 +5,4 @@ set -e
 rm -rf archives
 rm -rf midi
 rm -rf genre
+rm -rf results/*

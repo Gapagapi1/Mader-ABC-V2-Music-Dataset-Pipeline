@@ -14,7 +14,7 @@ if not os.path.exists(musescore_path):
     print("Musescore executable ({}) not found.".format(musescore_path))
     sys.exit(1)
 
-root = "./midi/lmd_matched_genre"
+root = "./midi/lmd_matched_flat"
 if not os.path.exists(root):
     print("Source directory ({}) not found.".format(root))
     sys.exit(1)
@@ -35,7 +35,7 @@ for curr_root, folders, files in os.walk(root):
     for file in files:
         midi_path = os.path.join(curr_root, file)
         sanitized_midi_folder = os.path.join(new_root, curr_root.replace(root + "/", ""))
-        sanitized_midi_path = os.path.join(sanitized_midi_folder, file.replace(".midi", ".mid"))
+        sanitized_midi_path = os.path.join(sanitized_midi_folder, file)
 
         abs_midi_path = os.path.abspath(midi_path)
         abs_sanitized_midi_path = os.path.abspath(sanitized_midi_path)
@@ -63,21 +63,27 @@ for i, job_chunk in enumerate(split_jobs):
         cmd = f"{musescore_path.replace('/', '\\')} -j {jobs_json_path}"
 
     proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    processes.append((proc, jobs_json_path))
+    processes.append((proc, cmd, jobs_json_path))
 
 
-# Wait
+# Wait and restart
 
-for proc, job_file in processes:
+while len(processes) > 0:
+    proc, cmd, jobs_json_path = processes.pop(0)
     stdout, stderr = proc.communicate()
+    print("Log for process {}:\n\t• command: {}\n\t• stdout: {}\n\t• stderr: {}".format(jobs_json_path, cmd, stdout, stderr))
     if proc.returncode != 0:
-        print(f"Error in process for {job_file}:\n{stderr.decode()}")
+        print("\t • Error code: {}".format(proc.returncode))
+        if input("\t • Restart? (Y/n)") != "n":
+            proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            processes.append((proc, cmd, jobs_json_path))
     else:
-        print(f"Output from {job_file}:\n{stdout.decode()}")
-    os.remove(job_file)
-
+        print("\t • successful!")
+        os.remove(job_file)
 
 exit(0)
+
+
 # Old
 
 wrong_files = []
