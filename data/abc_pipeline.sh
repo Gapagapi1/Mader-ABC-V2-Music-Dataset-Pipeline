@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -e
+
+./setup_softwares.sh
+./setup_data.sh
+./flatten.sh
+./sanitize_midi.sh
+./convert_to_abc.sh
