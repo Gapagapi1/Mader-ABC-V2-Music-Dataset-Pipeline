@@ -36,7 +36,7 @@ setup_softwares_windows () {
 
     cd - > /dev/null
 
-    echo 'Run a terminal with admin right and run "mklink /d .\softwares\musescore C:\Program Files\MuseScore 4\bin" (beware of your current directory)'
+    echo 'Run a terminal with admin right and run `mklink /d ".\softwares\musescore" "C:\Program Files\MuseScore 4\bin"` (beware of your current directory, it should be ./data)'
 }
 
 # setup_softwares_linux
