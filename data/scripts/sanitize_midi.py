@@ -4,7 +4,7 @@ import json
 import time
 import subprocess
 
-CORES = 14
+CORES = 8
 
 start_time = time.time()
 
@@ -24,7 +24,7 @@ new_root = "./midi/lmd_matched_flat_sanitized"
 print("Sanitizing the dataset of midi files.")
 
 print("Creating dataset folder...")
-os.makedirs(new_root)
+os.makedirs(new_root, exist_ok=True)
 
 
 # Creating jobs
@@ -43,14 +43,15 @@ for curr_root, folders, files in os.walk(root):
         abs_sanitized_midi_path = os.path.abspath(sanitized_midi_path)
 
         os.makedirs(sanitized_midi_folder, exist_ok=True)
-        jobs.append(
-            (
-                abs_midi_path if os.name == "posix" else abs_midi_path.replace("/", "\\"),
-                abs_sanitized_midi_path if os.name == "posix" else abs_sanitized_midi_path.replace("/", "\\")
+        if not os.path.exists(abs_sanitized_midi_path):
+            jobs.append(
+                (
+                    abs_midi_path if os.name == "posix" else abs_midi_path.replace("/", "\\"),
+                    abs_sanitized_midi_path if os.name == "posix" else abs_sanitized_midi_path.replace("/", "\\")
+                )
             )
-        )
 
-        fails[abs_midi_path if os.name == "posix" else abs_midi_path.replace("/", "\\")] = 0
+            fails[abs_midi_path if os.name == "posix" else abs_midi_path.replace("/", "\\")] = 0
 
 
 # Processing
@@ -70,7 +71,7 @@ while job_index < len(jobs) or len(running_processes) > 0:
         else:
             cmd = "{} {} -o {}".format(musescore_path.replace('/', '\\'), *job)
         
-        proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         running_processes.append((proc, cmd, job))
         job_index += 1
 
@@ -78,7 +79,7 @@ while job_index < len(jobs) or len(running_processes) > 0:
         proc, cmd, job = proc_tuple
         if proc.poll() is not None:  # process finished
             stdout, stderr = proc.communicate()
-            print("Log for process {}:\n\t• command: {}\n\t• stdout: {}\n\t• stderr: {}".format(job, cmd, stdout.decode('utf-8'), stderr.decode('utf-8')))
+            print("Log for process {}:\n\t• command: {}".format(job, cmd))
             if proc.returncode != 0:
                 print("\t• Error code: {}".format(proc.returncode))
                 if fails[job[0]] > 10:
@@ -89,7 +90,7 @@ while job_index < len(jobs) or len(running_processes) > 0:
                         cmd_restart = "{} {} -o {}".format(musescore_path, *job)
                     else:
                         cmd_restart = "{} {} -o {}".format(musescore_path.replace('/', '\\'), *job)
-                    new_proc = subprocess.Popen(cmd_restart, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    new_proc = subprocess.Popen(cmd_restart, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                     running_processes.append((new_proc, cmd_restart, job))
             else:
                 print("\t• Successful!")
