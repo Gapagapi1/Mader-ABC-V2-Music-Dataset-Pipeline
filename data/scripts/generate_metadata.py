@@ -18,10 +18,10 @@ if not os.path.exists(root):
     print("Source directory ({}) not found.".format(root))
     sys.exit(1)
 
-new_root = "./midi/lmd_matched_flat_sanitized"
+new_root = "./midi/lmd_matched_flat_metadata"
 
 
-print("Sanitizing the dataset of midi files using musescore.")
+print("Generating metadata the dataset of midi files using musescore.")
 
 print("Creating dataset folder...")
 os.makedirs(new_root, exist_ok=True)
@@ -37,7 +37,7 @@ for curr_root, folders, files in os.walk(root):
     for file in files:
         midi_path = os.path.join(curr_root, file)
         sanitized_midi_folder = os.path.join(new_root, curr_root.replace(root + "/", ""))
-        sanitized_midi_path = os.path.join(sanitized_midi_folder, file)
+        sanitized_midi_path = os.path.join(sanitized_midi_folder, file.replace(".mid", ".json"))
 
         abs_midi_path = os.path.abspath(midi_path)
         abs_sanitized_midi_path = os.path.abspath(sanitized_midi_path)
@@ -57,7 +57,7 @@ for curr_root, folders, files in os.walk(root):
 # Processing
 print("Processing...")
 
-command = "{} {} -o {}"
+command = "{} {} --score-meta"
 
 proc_count = 0
 
@@ -89,14 +89,13 @@ while job_index < len(jobs) or len(running_processes) > 0:
             #buff[job[0]][2] += stderr
         except subprocess.TimeoutExpired:
             pass
-        
+       
         if proc.poll() is not None:  # process finished
             stdout, stderr = proc.communicate()
             #buff[job[0]][1] += stdout
             #buff[job[0]][2] += stderr
             #stdout, stderr = buff[job[0]][1], buff[job[0]][2]
             print("Outcome for process {}:\n\t• Command: {}\n\t• Number of fails: {}\n\t• Logs:".format(proc_count, cmd, buff[job[0]][0]))
-            print("___________stdout___________\n\n{}\n____________________________".format(stdout))
             print("___________stderr___________\n\n{}\n____________________________".format(stderr))
             if proc.returncode != 0:
                 print("\t• Error code: {}".format(proc.returncode))
@@ -116,6 +115,8 @@ while job_index < len(jobs) or len(running_processes) > 0:
                     buff[job[0]][2] = bytearray()
             else:
                 print("\t• Successful!")
+                with open(job[1], "wb") as json_file:
+                    json_file.write(stdout)
             running_processes.remove(proc_tuple)
     print("Processing: current index = {}/{} ({:.2f}h); there are {} instances of musescore running and {} failed.".format(
         job_index,
