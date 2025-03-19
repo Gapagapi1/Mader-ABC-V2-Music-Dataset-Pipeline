@@ -1,48 +1,41 @@
 import os
 import sys
+import shutil
 
-abc_root = "./midi/lmd_matched_flat_sanitized_abc"
-if not os.path.exists(abc_root):
-    print("Source directory ({}) not found.".format(abc_root))
-    sys.exit(1)
+sys.path.append(os.path.dirname("scripts"))
+from data_pipeline_lib import Process
 
-split_abc_root = "./midi/lmd_matched_flat_sanitized_abc_split"
 
-print("Splitting abc tracks into different files.")
+def path_converter(from_path: str, is_folder: bool):
+    return os.path.basename(from_path) if is_folder else os.path.basename(from_path).replace(".abc", "")
 
-print("Creating dataset folder...")
-os.makedirs(split_abc_root)
+def process_function(from_path: str, to_path: str):
+    os.makedirs(to_path, exist_ok=True)
 
-print("Spliting and writting tracks...")
-for parent, folders, files in os.walk(abc_root):
-    for file in files:
-        abc_path = os.path.join(parent, file)
-        split_abc_folder = os.path.join(split_abc_root, parent.replace(abc_root + "/", ""))
-        split_abc_path = os.path.join(split_abc_folder, file)
-        split_abc_subfolder = split_abc_path.replace(".abc", "")
+    with open(from_path, 'r') as abc_file:
+        lines = abc_file.readlines()
 
-        os.makedirs(split_abc_subfolder, exist_ok=True)
-        
-        with open(abc_path, 'r') as abc_file:
-            lines = abc_file.readlines()
+    track = 0
 
-        track = 0
+    header = ""
 
-        header = ""
+    for line in lines:
+        track_path = os.path.join(to_path, "track {}.abc".format(track))
 
-        for line in lines:
-            track_path = os.path.join(split_abc_subfolder, "track {}.abc".format(track))
-            
-            if line.startswith("V:"):
-                track += 1
-                track_path = os.path.join(split_abc_subfolder, "track {}.abc".format(track))
-                with open(track_path, 'a') as split_abc_file:
-                    split_abc_file.write(header)
-                continue
-
-            if track == 0:
-                header += line
-                continue
-            
+        if line.startswith("V:"):
+            track += 1
+            track_path = os.path.join(to_path, "track {}.abc".format(track))
             with open(track_path, 'a') as split_abc_file:
-                split_abc_file.write(line)
+                split_abc_file.write(header)
+            continue
+
+        if track == 0:
+            header += line
+            continue
+
+        with open(track_path, 'a') as split_abc_file:
+            split_abc_file.write(line)
+
+
+process = Process("flatten", "./midi/lmd_matched_flat_sanitized_abc", "./midi/lmd_matched_flat_sanitized_abc2_split")
+process.step_by_function(process_function, path_converter)
