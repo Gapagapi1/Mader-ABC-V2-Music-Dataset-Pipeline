@@ -2,4 +2,6 @@
 ./setup_data.sh
 ./flatten.sh
 ./sanitize_midi.sh
+./generate_metadata.sh
 ./convert_to_abc.sh
+./split_abc_tracks.sh

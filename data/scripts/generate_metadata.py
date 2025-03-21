@@ -5,7 +5,7 @@ sys.path.append(os.path.dirname("scripts"))
 from data_pipeline_lib import Process, verify_software_dependency
 
 
-process = Process("generate_metadata", "./midi/lmd_matched_flat", "./midi/lmd_matched_flat_metadata")
+process = Process("generate_metadata", "./midi/lmd_matched_flat_sanitized", "./midi/lmd_matched_flat_metadata")
 
 
 def path_converter(from_path: str, is_folder: bool):

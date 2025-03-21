@@ -45,11 +45,17 @@ class Process:
                          file_exist_ok: bool = False,
                          consider_empty_folders: bool = False,
                          empty_folder_ok: bool = False,
-                         allocated_cores: int = None):
+                         allocated_cores: int = None,
+                         status_update_time_delta_threshold: float = 1):
         if allocated_cores is None:
             allocated_cores = psutil.cpu_count()
 
         print("[{}] Process from {} to {} running {} on {} cores.".format(self.name, self.from_folder_path, self.to_folder_path, process_function.__name__, allocated_cores))
+
+        start_time = time.time()
+        last_status_update_time = start_time
+
+        i = 0
 
         futures = []
         with concurrent.futures.ThreadPoolExecutor(max_workers=allocated_cores) as executor:
@@ -79,11 +85,18 @@ class Process:
 
                     future = executor.submit(process_function, os.path.abspath(file_path), os.path.abspath(new_file_path))
                     futures.append(future)
+                    i += 1
+
+                if time.time() - last_status_update_time > status_update_time_delta_threshold and i != 0:
+                    print("[{}] Processing: {}.".format(self.name, i))
+                    last_status_update_time = time.time()
 
         for future in concurrent.futures.as_completed(futures):
             exception = future.exception()
             if exception is not None:
                 print("[{}] There was an exception during the process: {}.".format(self.name, exception))
+
+        print("[{}] Processing: {}.".format(self.name, i))
 
     def step_by_popen(self,
                       process_command: str,
@@ -94,7 +107,10 @@ class Process:
                       max_retry_count: int = 1,
                       print_stdout_to_file: bool = False,
                       job_args_stdout_file_name_index: int = None,
-                      allocated_cores: int = None):
+                      allocated_cores: int = None,
+                      status_update_time_delta_threshold: float = 1,
+                      scheduler_tick_rate: float = 0.1,
+                      debug: bool = False):
         if allocated_cores is None:
             allocated_cores = psutil.cpu_count()
 
@@ -111,6 +127,7 @@ class Process:
             data[i] = default_data.copy()
 
         start_time = time.time()
+        last_status_update_time = start_time
 
         job_index = 0
         running_processes = []
@@ -144,15 +161,17 @@ class Process:
                     # buff[job[0]][1] += stdout
                     # buff[job[0]][2] += stderr
                     # stdout, stderr = buff[job[0]][1], buff[job[0]][2]
-                    print("[{}] Outcome for process {}:\n\t• Command: {}\n\t• Number of fails: {}".format(self.name, curr_proc.pid, curr_cmd, retries[curr_job_index]))
-                    if print_stdout or print_stderr:
-                        print("\t• Logs:")
-                        if print_stdout:
-                            print("___________stdout___________\n\n{}\n____________________________".format(stdout))
-                        if print_stderr:
-                            print("___________stderr___________\n\n{}\n____________________________".format(stderr))
+                    if debug:
+                        print("[{}] Outcome for process {}:\n\t• Command: {}\n\t• Number of fails: {}".format(self.name, curr_proc.pid, curr_cmd, retries[curr_job_index]))
+                        if print_stdout or print_stderr:
+                            print("\t• Logs:")
+                            if print_stdout:
+                                print("___________stdout___________\n\n{}\n____________________________".format(stdout))
+                            if print_stderr:
+                                print("___________stderr___________\n\n{}\n____________________________".format(stderr))
                     if curr_proc.returncode != 0:
-                        print("\t• Error code: {}".format(curr_proc.returncode))
+                        if debug:
+                            print("\t• Error code: {}".format(curr_proc.returncode))
                         if retries[curr_job_index] > max_retry_count:
                             failed_jobs.append(curr_job)
                             del data[curr_job_index]
@@ -167,24 +186,22 @@ class Process:
 
                             data[curr_job_index] = default_data.copy()
                     else:
-                        print("\t• Successful!")
+                        if debug:
+                            print("\t• Successful!")
                         del data[curr_job_index]
                         del retries[curr_job_index]
                         if print_stdout_to_file:
                             with open(curr_job[job_args_stdout_file_name_index], "wb") as json_file:
                                 json_file.write(stdout)
                     running_processes.remove(proc_tuple)
-            print(
-                "Processing: {}/{} ({:.2f}h) | {} instance(s) | {} job(s) failed.".format(
-                    job_index,
-                    len(job_args),
-                    ((len(job_args) - job_index) * ((time.time() - start_time) / job_index)) / 3600.0,
-                    len(running_processes),
-                    len(failed_jobs)
-                ))
-            time.sleep(0.1)
+            if time.time() - last_status_update_time > status_update_time_delta_threshold:
+                print("[{}] Processing: {}/{} ({:.2f}h) | {} instance(s) | {} job(s) failed.".format(self.name, job_index, len(job_args), ((len(job_args) - job_index) * ((time.time() - start_time) / job_index)) / 3600.0, len(running_processes), len(failed_jobs)))
+                last_status_update_time = time.time()
+            time.sleep(scheduler_tick_rate)
 
-        print(failed_jobs)
+        print("[{}] Processing: {}/{} ({:.2f}h) | {} instance(s) | {} job(s) failed.".format(self.name, job_index, len(job_args), ((len(job_args) - job_index) * ((time.time() - start_time) / job_index)) / 3600.0, len(running_processes), len(failed_jobs)))
+
+        print("[{}] Failed jobs:".format(self.name), failed_jobs)
 
         with open("./results/failed_jobs_{}.json".format(self.name), "w") as wrong_file:
             json.dump(failed_jobs, wrong_file)
