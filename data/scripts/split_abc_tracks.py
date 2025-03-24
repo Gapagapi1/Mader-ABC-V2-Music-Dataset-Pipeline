@@ -1,6 +1,5 @@
 import os
 import sys
-import shutil
 
 sys.path.append(os.path.dirname("scripts"))
 from data_pipeline_lib import Process
@@ -37,5 +36,5 @@ def process_function(from_path: str, to_path: str):
             split_abc_file.write(line)
 
 
-process = Process("split_abc_tracks", "./midi/lmd_matched_flat_sanitized_abc", "./midi/lmd_matched_flat_sanitized_abc_split")
+process = Process("split_abc_tracks", "./midi/lmd_matched_flat_sanitized_abc_clean", "./midi/lmd_matched_flat_sanitized_abc_clean_split")
 process.step_by_function(process_function, path_converter, status_update_time_delta_threshold=0.001)

@@ -88,7 +88,12 @@ class Process:
                     i += 1
 
                 if time.time() - last_status_update_time > status_update_time_delta_threshold and i != 0:
-                    print("[{}] Processing: {}.".format(self.name, i))
+                    print("[{}] Registering jobs: {}.".format(self.name, i))
+                    last_status_update_time = time.time()
+
+            while executor._work_queue.qsize() != 0:
+                if time.time() - last_status_update_time > status_update_time_delta_threshold:
+                    print("[{}] Processing: {} jobs pending.".format(self.name, executor._work_queue.qsize()))
                     last_status_update_time = time.time()
 
         for future in concurrent.futures.as_completed(futures):
@@ -96,7 +101,7 @@ class Process:
             if exception is not None:
                 print("[{}] There was an exception during the process: {}.".format(self.name, exception))
 
-        print("[{}] Processing: {}.".format(self.name, i))
+        print("[{}] Processing: {} jobs pending.".format(self.name, executor._work_queue.qsize()))
 
     def step_by_popen(self,
                       process_command: str,
