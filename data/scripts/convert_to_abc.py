@@ -23,4 +23,4 @@ midi2abc_path = midi2abc_path if os.name == "posix" else midi2abc_path.replace('
 
 command = midi2abc_path + " -f {} -k 0 -obpl -nogr -noly -o {}"
 
-process.step_by_popen(command, job_args, [bytearray(), bytearray()], True, True, 10)
+process.step_by_popen(command, job_args, [bytearray(), bytearray()], True, True, 10, scheduler_tick_rate=0, allocated_cores=64)

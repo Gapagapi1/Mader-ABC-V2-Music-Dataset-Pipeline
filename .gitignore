@@ -14,3 +14,5 @@ data/softwares/*
 
 data/scripts/musescore
 data/jobs_*
+
+local/*

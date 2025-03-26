@@ -14,31 +14,29 @@ def wrong_abc(from_path: str, reason:str):
 
 def process_function(from_path: str, to_path: str):
     with open(from_path, 'r') as abc_file:
-        lines = abc_file.readlines()
+        is_empty = True
+        found_M_statement = False
 
-    if len(lines) == 0:
-        wrong_abc(from_path, "empty file ({})".format(lines))
-        return
+        while line := abc_file.readline():
+            is_empty = False
 
-    line = lines[0]
-    found_M_statement = False
+            if line.startswith("M"):
+                found_M_statement = True
+                break
 
-    for curr_i, curr_line in enumerate(lines):
-        line = curr_line
-        i = curr_i
-        if curr_line.startswith("M"):
-            found_M_statement = True
-            break
+        if is_empty:
+            wrong_abc(from_path, "empty file ({})".format(abc_file.read()))
+            return
 
-    if not found_M_statement:
-        wrong_abc(from_path, "M statement not found")
-        return
+        if not found_M_statement:
+            wrong_abc(from_path, "M statement not found")
+            return
 
-    if line.startswith("M: -"):
-        wrong_abc(from_path, "M statement is negative ({})".format(line.strip("\n")))
-        return
+        if line.startswith("M: -"):
+            wrong_abc(from_path, "M statement is negative ({})".format(line.strip("\n")))
+            return
 
-    shutil.copy2(from_path, to_path)
+        shutil.copy2(from_path, to_path)
 
 
 process = Process("clean_abc", "./midi/lmd_matched_flat_sanitized_abc", "./midi/lmd_matched_flat_sanitized_abc_clean")
