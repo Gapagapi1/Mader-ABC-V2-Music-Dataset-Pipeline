@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import shutil
+import music21
 
 sys.path.append(os.path.dirname("scripts"))
 from data_pipeline_lib import Process
@@ -35,6 +36,8 @@ def process_function(from_path: str, to_path: str):
         if line.startswith("M: -"):
             wrong_abc(from_path, "M statement is negative ({})".format(line.strip("\n")))
             return
+
+        
 
         shutil.copy2(from_path, to_path)
 
