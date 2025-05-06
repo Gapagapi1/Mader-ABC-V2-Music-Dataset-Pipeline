@@ -5,4 +5,5 @@
 ./sanitize_midi.sh
 ./convert_to_abc.sh
 ./clean_abc.sh
+./tokenize_abc.sh
 ./split_abc_tracks.sh
