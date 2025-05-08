@@ -9,32 +9,37 @@ def path_converter(from_path: str, is_folder: bool):
     return os.path.basename(from_path) if is_folder else os.path.basename(from_path).replace(".abc", "")
 
 def process_function(from_path: str, to_path: str):
-    os.makedirs(to_path, exist_ok=True)
+    try:
+        os.makedirs(to_path, exist_ok=True)
 
-    with open(from_path, 'r') as abc_file:
-        lines = abc_file.readlines()
+        with open(from_path, 'r') as abc_file:
+            lines = abc_file.readlines()
 
-    track = 0
+        track_data = {}
+        track = 0
+        header = ""
 
-    header = ""
+        for line in lines:
+            if line.replace(" ", "").startswith("V:"):
+                track += 1
+                track_data[track] = [header]
+                continue
 
-    for line in lines:
-        track_path = os.path.join(to_path, "track {}.abc".format(track))
+            if track == 0:
+                header += line
+            else:
+                track_data[track].append(line)
 
-        if line.startswith("V:"):
-            track += 1
-            track_path = os.path.join(to_path, "track {}.abc".format(track))
-            with open(track_path, 'a') as split_abc_file:
-                split_abc_file.write(header)
-            continue
-
-        if track == 0:
-            header += line
-            continue
-
-        with open(track_path, 'a') as split_abc_file:
-            split_abc_file.write(line)
+        for track_num, data in track_data.items():
+            track_path = os.path.join(to_path, f"track {track_num}.abc")
+            with open(track_path, 'w') as f:
+                f.writelines(data)
+    except Exception as e:
+        import traceback
+        print(f"[Process Function Error] Failed for {from_path} -> {to_path} with exception \"{e}\": " + traceback.format_exc())
+        raise
 
 
-process = Process("split_abc_tracks", "./midi/lmd_matched_flat_sanitized_abc_clean", "./midi/lmd_matched_flat_sanitized_abc_clean_split")
-process.step_by_function(process_function, path_converter, status_update_time_delta_threshold=0.001)
+if __name__ == "__main__":
+    process = Process("split_abc_tracks", "./midi/lmd_matched_flat_sanitized_abc_clean", "./midi/lmd_matched_flat_sanitized_abc_clean_split")
+    process.step_by_function(process_function, path_converter, useProcessExecutor=True)

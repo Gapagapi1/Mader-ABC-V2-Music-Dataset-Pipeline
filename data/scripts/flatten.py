@@ -10,5 +10,6 @@ def process_function(from_path: str, to_path: str):
     shutil.copy2(from_path, to_path)
 
 
-process = Process("flatten", "./midi/lmd_matched", "./midi/lmd_matched_flat")
-process.step_by_function(process_function)
+if __name__ == "__main__":
+    process = Process("flatten", "./midi/lmd_matched", "./midi/lmd_matched_flat")
+    process.step_by_function(process_function, useProcessExecutor=True)

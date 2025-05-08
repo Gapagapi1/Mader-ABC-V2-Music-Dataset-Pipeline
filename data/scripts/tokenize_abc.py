@@ -179,15 +179,8 @@ GENERAL_MIDI_PROGRAM_INSTRUMENTS_MAPPING = {
 }
 
 
-wrong_abc_files = {}
-unused_tokens = set()
-
 def path_converter(from_path: str, is_folder: bool):
     return os.path.basename(from_path) if is_folder else os.path.basename(from_path).replace(".abc", "")
-
-def wrong_abc(from_path: str, reason:str):
-    wrong_abc_files.update({from_path: reason})
-    print("[clean_abc]", from_path, "is a wrong abc file:", reason)
 
 def get_metadata_from_midi_path(input_path: str) -> str | None:
     parts = input_path.split(os.sep)
@@ -203,6 +196,7 @@ def get_note_tok_name(tok, strSrc = None):
 
 def voice_to_tokens(voice):
     tokens = []
+    unused_tokens = set()
     for token in voice.tokens:
         if isinstance(token, music21.abcFormat.ABCBar):
             tokens.append("|")  # TODO: additional bars
@@ -217,10 +211,12 @@ def voice_to_tokens(voice):
             tokens.append(token.getQuarterLength(strSrc=token.src))
         else:
             unused_tokens.add(token.src)
-    return tokens
+    return tokens, unused_tokens
 
 def process_function(from_path: str, to_path: str):
     os.makedirs(to_path, exist_ok=True)
+
+    unused_tokens = set()
 
     with open(from_path) as abc_file:
         data = abc_file.read()
@@ -228,8 +224,7 @@ def process_function(from_path: str, to_path: str):
     data_voice_has_instrument_change = [voice.find("%%MIDI program ") + voice.find("%%MIDI channel ") != -2 for voice in data.split("V:")[1:]]
 
     if not data_voice_has_instrument_change[0]:
-        wrong_abc(from_path, "no instrument change at start")
-        return
+        return (False, from_path, "no instrument change at start")
 
     try:
         abc = music21.abcFormat.ABCHandler()
@@ -237,18 +232,19 @@ def process_function(from_path: str, to_path: str):
 
         metadata_path = get_metadata_from_midi_path(from_path)
         if metadata_path == None:
-            wrong_abc(from_path, "could not create associated metadata path")
-            return
+            return (False, from_path, "could not create associated metadata path")
         if not os.path.exists(metadata_path):
-            wrong_abc(from_path, "metadata path does not exist")
-            return
-        with open(metadata_path, "r") as metadata_file:
+            return (False, from_path, "metadata path does not exist")
+        with open(metadata_path, "r", encoding="utf8") as metadata_file:
             metadata = json.load(metadata_file)
 
         voice_midi_program_dict = {}
+        is_there_a_voice = False
 
         part_index = -1
         for i, voice in enumerate(abc.splitByVoice()[1:]):
+            is_there_a_voice = True
+
             if data_voice_has_instrument_change[i]:
                 part_index += 1
 
@@ -267,23 +263,44 @@ def process_function(from_path: str, to_path: str):
 
             path = os.path.join(to_path, "voice_{}.pkl".format(i))
             with open(path, "wb") as token_file:
-                pickle.dump(voice_to_tokens(voice), token_file)
+                tokens, local_unused_tokens = voice_to_tokens(voice)
+                pickle.dump(tokens, token_file)
+                unused_tokens.update(local_unused_tokens)
+
+        if not is_there_a_voice:
+            return (False, from_path, "no voices found")
 
         path = os.path.join(to_path, "metadata.json")
-        with open(path, "w") as metadata_file:
+        with open(path, "w", encoding="utf8") as metadata_file:
             json.dump(voice_midi_program_dict, metadata_file)
 
     except Exception as e:
         import traceback
-        wrong_abc(from_path, "Error \"{}\" : ".format(e) + traceback.format_exc())
-        return
+        return (False, from_path, "Error \"{}\" : ".format(e) + traceback.format_exc())
+
+    return (True, from_path, unused_tokens)
 
 
-process = Process("clean_abc", "./midi/lmd_matched_flat_sanitized_abc_clean", "./midi/lmd_matched_flat_sanitized_abc_clean_tokenized")
-process.step_by_function(process_function, path_converter=path_converter)
+if __name__ == "__main__":
+    wrong_abc_files = {}
+    unused_tokens = set()
 
-with open("./results/failed_jobs_clean_abc_tokenize.json", "w") as wrong_file:
-    json.dump(wrong_abc_files, wrong_file)
+    def wrong_abc(from_path: str, reason: str):
+        wrong_abc_files.update({from_path: reason})
+        print("[clean_abc]", from_path, "is a wrong abc file:", reason)
 
-with open("./results/unused_tokens_clean_abc_tokenize.json", "w") as wrong_file:
-    json.dump(list(unused_tokens), wrong_file)
+    process = Process("clean_abc", "./midi/lmd_matched_flat_sanitized_abc_clean", "./midi/lmd_matched_flat_sanitized_abc_clean_tokenized")
+    results = process.step_by_function(process_function, path_converter=path_converter, useProcessExecutor=True)
+
+    for res in results:
+        is_success, from_path, reason_or_unused_tokens = res
+        if not is_success:
+            wrong_abc(from_path, reason_or_unused_tokens)
+        else:
+            unused_tokens.update(reason_or_unused_tokens)
+
+    with open("./results/failed_jobs_clean_abc_tokenize.json", "w") as wrong_file:
+        json.dump(wrong_abc_files, wrong_file)
+
+    with open("./results/unused_tokens_clean_abc_tokenize.json", "w") as wrong_file:
+        json.dump(list(unused_tokens), wrong_file)

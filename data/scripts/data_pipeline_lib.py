@@ -33,7 +33,7 @@ class Process:
             print("[{}] Target directory ({}) already exists.".format(self.name, self.to_folder_path))
             sys.exit(1)
 
-        os.makedirs(self.to_folder_path)
+        os.makedirs(self.to_folder_path, exist_ok=to_folder_exist_ok)
 
         print("[{}] Process from {} to {} created.".format(self.name, self.from_folder_path, self.to_folder_path))
 
@@ -41,6 +41,7 @@ class Process:
     def step_by_function(self,
                          process_function,
                          path_converter = default_path_converter,
+                         useProcessExecutor: bool = False,
                          folder_exist_ok: bool = False,
                          file_exist_ok: bool = False,
                          consider_empty_folders: bool = False,
@@ -52,13 +53,11 @@ class Process:
 
         print("[{}] Process from {} to {} running {} on {} cores.".format(self.name, self.from_folder_path, self.to_folder_path, process_function.__name__, allocated_cores))
 
-        start_time = time.time()
-        last_status_update_time = start_time
-
         i = 0
+        last_status_update_time = time.time()
 
         futures = []
-        with concurrent.futures.ThreadPoolExecutor(max_workers=allocated_cores) as executor:
+        with (concurrent.futures.ProcessPoolExecutor if useProcessExecutor else concurrent.futures.ThreadPoolExecutor)(max_workers=allocated_cores) as executor:
             for root, folders, files in os.walk(self.from_folder_path):
                 if not consider_empty_folders and len(files) == 0:
                     if empty_folder_ok:
@@ -73,7 +72,7 @@ class Process:
                     print("[{}] Folder path ({}) already exists.".format(self.name, new_folder_path))
                     sys.exit(1)
 
-                os.makedirs(new_folder_path)
+                os.makedirs(new_folder_path, exist_ok=folder_exist_ok)
 
                 for file in files:
                     file_path = os.path.join(root, file)
@@ -91,17 +90,27 @@ class Process:
                     print("[{}] Registering jobs: {}.".format(self.name, i))
                     last_status_update_time = time.time()
 
-            while executor._work_queue.qsize() != 0:
+            completed = 0
+            total = len(futures)
+            last_status_update_time = time.time()
+
+            results = []
+
+            for future in concurrent.futures.as_completed(futures):
+                completed += 1
                 if time.time() - last_status_update_time > status_update_time_delta_threshold:
-                    print("[{}] Processing: {} jobs pending.".format(self.name, executor._work_queue.qsize()))
+                    print("[{}] Processing: {}/{} jobs pending.".format(self.name, completed, total), flush=True)
                     last_status_update_time = time.time()
 
-        for future in concurrent.futures.as_completed(futures):
-            exception = future.exception()
-            if exception is not None:
-                print("[{}] There was an exception during the process: {}.".format(self.name, exception))
+                try:
+                    res = future.result()
+                    results.append(res)
+                except Exception as e:
+                    print("[{}] Exception during processing: {}".format(self.name, e))
 
-        print("[{}] Processing: {} jobs pending.".format(self.name, executor._work_queue.qsize()))
+        print("[{}] Processing: {}/{} jobs pending.".format(self.name, completed, total))
+
+        return results
 
     def step_by_popen(self,
                       process_command: str,
