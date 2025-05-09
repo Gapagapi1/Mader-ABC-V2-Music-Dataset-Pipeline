@@ -2,7 +2,7 @@ import os
 import json
 from shutil import rmtree, copy2
 
-os.chdir('/home/thomas/NLP_Project/data')
+os.chdir('./data')
 
 def get_files_names(genre_path: str):
     metadata_files = []
@@ -22,6 +22,10 @@ def get_lmd_tracks(save_file:str = "lmd_tracks"):
     for track in os.listdir("./midi/lmd_matched_flat"):
         all_tracks.add(track)
     print("Outputing into '" + save_file + "'.")
+
+    if (not os.path.exists("./results/tracks/")):
+        os.mkdir("./results/tracks/")
+
     with open("./results/tracks/" + save_file, "w") as f:
         f.write('\n'.join(all_tracks))
     print("Finished task")
@@ -164,6 +168,9 @@ def get_metadata_file_genres(file_name: str, output_name: str = None, do_set_map
                 all_genres[splitted_tracks[k].strip()] = 0
             all_genres[splitted_tracks[k].strip()] += 1
     
+    if (not os.path.exists("./results/genres/")):
+        os.mkdir("./results/genres/")
+    
     with open("./results/genres/" + output_name, "w") as f:
         f.write('\n'.join(items[0] + " " + str(items[1]) for items in sorted(all_genres.items(), key=lambda x: x[1], reverse=True)))
 
@@ -227,6 +234,10 @@ def set_definitive_genre(genre_mapping_path: str):
             count_mapping[max(track_genres, key=track_genres.get)] = 0
         count_mapping[max(track_genres, key=track_genres.get)] += 1
 
+
+    if (not os.path.exists("./results/mapping/")):
+        os.mkdir("./results/mapping/")
+        
     with open("./results/mapping/all_tracks", "w") as f:
         f.write('\n'.join(items[0] + " " + str(items[1]) for items in sorted(track_mapping.items(), key=lambda x: x[1], reverse=True)))
     with open("./results/mapping/selection", "w") as f:
