@@ -1,0 +1,68 @@
+{
+    "Rock": [
+        "Rock",
+        "Rock_Contemporary",
+        "Rock_Hard",
+        "Rock_College",
+        "Rock_Alternative",
+        "Rock_Neo_Psychedelia",
+        "Grunge_Emo",
+        "Punk",
+        "Pop_Rock",
+        "Metal",
+        "Metal_Alternative",
+        "Metal_Heavy",
+        "Metal_Death"
+    ],
+    "Pop": [
+        "Pop",
+        "Pop_Contemporary",
+        "Pop_Indie",
+        "Pop_Latin",
+        "Pop_Rock"
+    ],
+    "Electronic": [
+        "Electronic",
+        "Dance",
+        "Electronica",
+        "Experimental"
+    ],
+    "Country": [
+        "Country",
+        "Country_Traditional",
+        "Folk",
+        "Folk_International"
+    ],
+    "RnB": [
+        "Rap",
+        "Hip_Hop_Rap",
+        "RnB",
+        "RnB_Soul"
+    ],
+    "Jazz": [
+        "Jazz",
+        "Jazz_Classic",
+        "Blues",
+        "Blues_Contemporary",
+        "Big_Band",
+        "Vocal"
+    ],
+    "World": [
+        "International",
+        "Latin",
+        "Reggae",
+        "World"
+    ],
+    "Other": [
+        "Classical",
+        "Avant_Garde",
+        "Stage",
+        "Children",
+        "Comedy_Spoken",
+        "Holiday",
+        "Religious",
+        "Gospel",
+        "New_Age",
+        "Easy_Listening"
+    ]
+}

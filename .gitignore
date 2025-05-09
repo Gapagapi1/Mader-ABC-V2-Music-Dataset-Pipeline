@@ -3,7 +3,7 @@
 **/__pycache__
 
 data/midi
-data/genre
+data/genre/metadata_files
 data/archives
 
 data/results/*

@@ -1,0 +1,150 @@
+{
+    "Pop_Rock": [
+        "Pop",
+        "Rock"
+    ],
+    "Rock": [
+        "Rock"
+    ],
+    "Pop": [
+        "Pop"
+    ],
+    "Electronic": [
+        "Electronic"
+    ],
+    "Country": [
+        "Country"
+    ],
+    "Pop_Contemporary": [
+        "Pop"
+    ],
+    "RnB": [
+        "RnB"
+    ],
+    "Rock_Contemporary": [
+        "Rock"
+    ],
+    "Latin": [
+        "World"
+    ],
+    "Jazz": [
+        "Jazz"
+    ],
+    "Country_Traditional": [
+        "Country"
+    ],
+    "Dance": [
+        "Electronic"
+    ],
+    "Rock_Hard": [
+        "Rock"
+    ],
+    "Metal": [
+        "Rock"
+    ],
+    "Pop_Indie": [
+        "Pop"
+    ],
+    "Metal_Alternative": [
+        "Rock"
+    ],
+    "Rap": [
+        "RnB"
+    ],
+    "International": [
+        "World"
+    ],
+    "Rock_College": [
+        "Rock"
+    ],
+    "Folk": [
+        "Country"
+    ],
+    "Pop_Latin": [
+        "Pop"
+    ],
+    "Rock_Alternative": [
+        "Rock"
+    ],
+    "Experimental": [
+        "Electronic"
+    ],
+    "Hip_Hop_Rap": [
+        "RnB"
+    ],
+    "Religious": [
+        "Other"
+    ],
+    "New_Age": [
+        "Other"
+    ],
+    "Vocal": [
+        "Jazz"
+    ],
+    "Blues": [
+        "Jazz"
+    ],
+    "Folk_International": [
+        "Country"
+    ],
+    "RnB_Soul": [
+        "RnB"
+    ],
+    "Rock_Neo_Psychedelia": [
+        "Rock"
+    ],
+    "Reggae": [
+        "World"
+    ],
+    "Electronica": [
+        "Electronic"
+    ],
+    "Gospel": [
+        "Other"
+    ],
+    "Easy_Listening": [
+        "Other"
+    ],
+    "Grunge_Emo": [
+        "Rock"
+    ],
+    "Metal_Heavy": [
+        "Rock"
+    ],
+    "Metal_Death": [
+        "Rock"
+    ],
+    "World": [
+        "World"
+    ],
+    "Jazz_Classic": [
+        "Jazz"
+    ],
+    "Punk": [
+        "Rock"
+    ],
+    "Big_Band": [
+        "Jazz"
+    ],
+    "Blues_Contemporary": [
+        "Jazz"
+    ],
+    "Classical": [
+        "Other"
+    ],
+    "Stage": [
+        "Other"
+    ],
+    "Children": [
+        "Other"
+    ],
+    "Comedy_Spoken": [
+        "Other"
+    ],
+    "Holiday": [
+        "Other"
+    ],
+    "Avant_Garde": [
+        "Other"
+    ]
+}
