@@ -83,8 +83,8 @@ def get_all_metadata_files_mapping(files_paths: list[str], save_file:str = "all_
         single_file_tracks = get_metadata_file_mapping(file_path + ".cls", file_path)
         for key in single_file_tracks.keys():
             if key not in all_tracks:
-                all_tracks[key] = set()
-            all_tracks[key] |= single_file_tracks[key]
+                all_tracks[key] = []
+            all_tracks[key] += single_file_tracks[key]
     
     for key in all_tracks.keys():
         all_tracks_str += key + " " + " ".join(all_tracks[key]) + "\n"
@@ -208,6 +208,7 @@ def set_definitive_genre(genre_mapping_path: str):
     track_mapping = {}
     count_mapping = {}
 
+    selection = ""
     for track in tracks:
         track = track.strip()
         title = track.split(' ')[0]
@@ -221,23 +222,27 @@ def set_definitive_genre(genre_mapping_path: str):
                 track_genres[genre] += 1
         
         track_mapping[title] = max(track_genres, key=track_genres.get)
+        selection += title + " : " + str(track_genres) + " -> " + str(track_mapping[title]) + "\n"
         if (max(track_genres, key=track_genres.get) not in count_mapping):
             count_mapping[max(track_genres, key=track_genres.get)] = 0
         count_mapping[max(track_genres, key=track_genres.get)] += 1
 
     with open("./results/mapping/all_tracks", "w") as f:
         f.write('\n'.join(items[0] + " " + str(items[1]) for items in sorted(track_mapping.items(), key=lambda x: x[1], reverse=True)))
-
+    with open("./results/mapping/selection", "w") as f:
+        f.write(selection)
     print(count_mapping)
 
 
 
 
 
-# metadata_files = get_files_names("./genre/metadata_files")
-# get_lmd_tracks()
-# get_all_metadata_files_genres(metadata_files)
+metadata_files = get_files_names("./genre/metadata_files")
+get_lmd_tracks()
+get_all_metadata_files_genres(metadata_files)
 # sort_matched_tracks()
 
-# TODO: concat New Age into New_Age
 set_definitive_genre("./genre/mapping.json")
+
+{'Pop': 5165, 'World':  869, 'Jazz': 627, 'Rock': 4644, 'Electronic': 1644, 'Country': 1383, 'RnB': 1208, 'Other': 570}
+{'Pop': 5317, 'World': 1022, 'Jazz': 741, 'Rock': 4616, 'Electronic': 1508, 'Country': 1273, 'RnB': 1124, 'Other': 509}
