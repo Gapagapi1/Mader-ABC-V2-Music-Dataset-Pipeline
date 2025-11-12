@@ -2,17 +2,17 @@
 **/.idea
 **/__pycache__
 
-data/midi
-data/genre/metadata_files
-data/archives
+midi
+genre/metadata_files
+archives
 
-data/results/*
-!data/results/.gitkeep
+results/*
+!results/.gitkeep
 
-data/softwares/*
-!data/softwares/.gitkeep
+softwares/*
+!softwares/.gitkeep
 
-data/scripts/musescore
-data/jobs_*
+scripts/musescore
+jobs_*
 
 local/*
