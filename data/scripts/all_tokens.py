@@ -26,14 +26,9 @@ def get_all_tokens(from_path:str):
 
 
 if __name__ == "__main__":
-    if False:
-        tokens = get_all_tokens("./midi/lmd_matched_flat_sanitized_abc_clean_tokenized")
+    tokens = get_all_tokens("./midi/lmd_matched_flat_sanitized_abc_clean_tokenized")
 
-        with open("results/all_tokens.pkl", "wb") as tokens_file:
-            pickle.dump(tokens, tokens_file)
+    with open("results/all_tokens.pkl", "wb") as tokens_file:
+        pickle.dump(tokens, tokens_file)
 
-    if True:
-        with open("results/all_tokens.pkl", "rb") as tokens_file:
-            tokens = pickle.load(tokens_file)
-
-        print(tokens)
+    print(tokens)

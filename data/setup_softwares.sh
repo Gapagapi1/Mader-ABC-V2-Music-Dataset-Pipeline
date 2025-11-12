@@ -22,18 +22,18 @@ setup_softwares_linux () {
 
     cd - > /dev/null
 
-    ln -s '/path/to/musescore/binary/parent/directory' './softwares/musescore' 
+    ln -s '/path/to/musescore/binary/parent/directory' './softwares/musescore'
 }
 
 # Windows
 setup_softwares_windows () {
     cd archives
-    
+
     wget 'https://ifdo.ca/~seymour/runabc/abcmidi_win32_mingw64.zip'
-    
+
     cd - > /dev/null
     cd softwares
-    
+
     unzip '../archives/abcmidi_win32_mingw64.zip'
     mv abcmidi_win32_mingw64 abcmidi
 
