@@ -415,5 +415,5 @@ if __name__ == "__main__":
     
     with open("./results/mapping/all_tracks", "r") as file:
         json_content = "{\n" + "".join(["\t\"" + line.split(" ")[0] + "\"" + ": " + "\"" + line.split(" ")[1].replace("\n", "") + "\",\n" for line in file.readlines()])[:-1] + "\n}"
-    with open("./results/all_tracks.json", "w") as file:
+    with open("./results/msd_trackid_to_genre.json", "w") as file:
         file.write(json_content)
