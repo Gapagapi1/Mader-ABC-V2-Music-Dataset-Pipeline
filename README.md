@@ -21,7 +21,6 @@ The pipeline relies on well-established tooling:
 
 > Background and design choices are documented in the associated [report](./REPORT.md). 
 
----
 
 ## 🧭 Project Family
 
@@ -32,7 +31,6 @@ This work is part of a 4-part project:
 3. **Model Code** → [GitHub: Mader ABC V2 - Music Model Architectures](https://github.com/Gapagapi1/mader-abc-v2-music-model-architectures) – Model architectures and training scripts for music classification and generation.
 4. **Trained Models** → [🤗 Mader ABC V2 - Music Models](https://huggingface.co/models?search=Gapagapi1) – Pretrained checkpoints for generation and classification models.
 
----
 
 ## 💻 Platform & Compatibility
 
@@ -40,7 +38,6 @@ This work is part of a 4-part project:
 * Each part of the code was **written with Unix/POSIX/Linux compatibility in mind** but **not fully tested** there yet. It should be relatively straightforward to adapt any left over Windows specifics; each step where a manual action is needed on Linux has been documented as inline instructions in the scripts.
 * If you're on **Linux**, run the scripts in order; inline usage messages and any errors should help you adjust minor incompatibilities as you go.
 
----
 
 ## 📋 Prerequisites
 
@@ -49,7 +46,6 @@ This work is part of a 4-part project:
 * Python 3 (tested with 3.11), with the python environment described in `pyproject.toml`
 * MuseScore 4
 
----
 
 ## 🚀 Quick Start
 
@@ -90,7 +86,6 @@ Outputs will be created under project subfolders (see each script's description)
 
 Note that some tracks may contain almost no ABC token sequence and empty metadata at the end of the pipeline (53 tracks in our run), you can remove them.
 
----
 
 ## 📁 Repository Structure
 
@@ -108,7 +103,6 @@ The repository and the folders created by the pipeline are organized as follows:
 
 > Note: Some of these directories (like `archives/`, `midi/`, `results/`, and `data/`) are **created automatically** when you run the pipeline for the first time. They may not appear in the repository until you execute the corresponding steps.
 
----
 
 ## 🗂️ Pipeline Scripts
 
@@ -132,49 +126,41 @@ Bootstrap all third-party tools used by the pipeline: the **abcMIDI** suite (for
 
 2. Optionally comment the final `git restore setup_softwares.sh` (otherwise your edits will be reverted, which is handy once you've learned the exact steps).
 
----
 
 ### 2) `./scripts/setup_data.sh`
 
 Fetch and organize all **source datasets and annotations** used by the pipeline. It downloads archives and plain files, extracts what's needed, and lays out a predictable directory structure so later steps can find MIDI and genre labels. The script is **idempotent**: it skips downloads/extractions that already exist.
 
----
 
 ### 3) `./scripts/flatten.py`
 
 Copy all MIDI files from their original nested structure into a flat, consistent directory layout.
 
----
 
 ### 4) `./scripts/match_tracks.py`
 
 Consolidate and reconcile genre annotations from multiple MSD/Tagtraum metadata sources with the LMD-matched MIDI tracks, compute consistent genre assignments for each piece, and output a unified, cleaned, and deterministic genre mapping for the dataset in `./results/msd_trackid_to_genre.json`.
 
----
 
 ### 5) `./scripts/generate_metadata.py`
 
 Extract instrument and structural metadata from each MIDI file by invoking MuseScore in batch with a custom scheduler. It produces one JSON metadata file per song or arrangement for downstream alignment and analysis.
 
----
 
 ### 6) `./scripts/sanitize_midi.py`
 
 Re-export and normalize MIDI files through MuseScore (using the custom scheduler) to sanitize their content (ensure consistent timing, encoding, and format compliance). This enables midi2abc to focus on converting rather than MIDI standardization.
 
----
 
 ### 7) `./scripts/convert_to_abc.py`
 
 Convert sanitized MIDI files to standardized ABC notation using midi2abc with fixed key and formatting options to harmonize the musical structure and prepare data for tokenization.
 
----
 
 ### 8) `./scripts/clean_abc.py` 
 
 Validate ABC files (meter, key, measures, notes, voice–metadata match), keep only valid ones, retry conversion from unsanitized MIDI to recover extras, and log remaining failures.
 
----
 
 ### 9) `./scripts/tokenize_abc.py`
 
@@ -182,37 +168,31 @@ Parse ABC files into per-voice token sequences (notes, chords, barlines, duratio
 
 `encoder_decoder_utils.py` provides a way to convert ABC from tokenized to valid abc file format.
 
----
 
 ### 10) `./scripts/split_abc_tracks.py`
 
 Split multi-voice ABC files into individual per-track files by detecting `V:` sections, preserving the header, and writing one `track N.abc` per voice for easier playback and dataset verification (using `Starbound Composer` or any other ABC player).
 
----
 
 ### 11) `./scripts/build_hf_dataset.py` (optional)
 
 Aggregate all processed MIDI-derived files into a unified Hugging Face compatible dataset by reading tokenized voices, ABC tracks, and genre labels, then exporting them as structured Parquet shards.
 
----
 
 ### 12) `./scripts/all_tokens.py` (optional)
 
 Aggregate all token files across the dataset into a single vocabulary, write it to disk and print it.
 
----
 
 ### 13) `./scripts/convert_to_musicxml.py` (optional, replaces `./scripts/convert_to_abc.py`)
 
 Same as `./convert_to_abc.sh` but for MusicXML. Note that the pipeline ends at this point if you choose this path.
 
----
 
 ### 14) `./scripts/clear_data.sh` (optional)
 
 Clears all generated data from the pipeline, including results. Useful when the pipeline didn't finish early in the process and you want to rerun it entirely.
 
----
 
 ## 💡 Tips & Troubleshooting
 
@@ -220,7 +200,6 @@ Clears all generated data from the pipeline, including results. Useful when the 
 * **midi2abc errors on certain files?**: That's expected for some MIDI variants; ensure `sanitize_midi.sh` ran; if a file still fails, the cleaner script may fall back to the original MIDI in a second pass. 
 * **Linux**: See the **Platform & Compatibility section** above.
 
----
 
 ## ⏳ TODO
 
@@ -229,14 +208,12 @@ Clears all generated data from the pipeline, including results. Useful when the 
 - [ ] Remove dependencies.
 - [ ] Explore further applications...
 
----
 
 ## 🪪 Licensing
 
 - **Code (this repository):** MIT License; see [LICENSE](./LICENSE).
 - **Important:** This repo contains *code only*. Any **datasets** or **trained models** produced by this code may be subject to additional restrictions from their upstream sources (e.g., Million Song Dataset / Echo Nest terms, Tagtraum, TU Wien MAGD/MASD/TopMAGD, Lakh MIDI Dataset); consult their respective licenses if you use resulting data/models.
 
----
 
 ## 🪶 Attribution
 
@@ -261,7 +238,6 @@ Clears all generated data from the pipeline, including results. Useful when the 
 
 > Hendrik Schreiber. [Improving Genre Annotations for the Million Song Dataset.](https://www.tagtraum.com/download/schreiber_msdgenre_ismir2015.pdf) In Proceedings of the 16th International Society for Music Information Retrieval Conference (ISMIR), pages 241-247, Málaga, Spain, Oct. 2015. \[[slides](https://speakerdeck.com/hendriks73/improving-genre-annotations-for-the-million-song-dataset)\] 
 
----
 
 ## 👥 Author Contributions
 
@@ -274,7 +250,6 @@ Clears all generated data from the pipeline, including results. Useful when the 
 - **Loïs Bréant** — [@loisBreant] — Data Investigation; Data Visualization
   *Implemented data rendering utilities and results used during conceptualization.*
 
----
 
 ## 📚 Citation
 
