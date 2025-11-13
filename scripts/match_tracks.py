@@ -1,12 +1,161 @@
 import os
 import json
-from shutil import rmtree, copy2
+from shutil import copy2
 
-os.chdir('./data')
+genre_mapping_dict = {
+    "Pop_Rock": [
+        "Pop",
+        "Rock"
+    ],
+    "Rock": [
+        "Rock"
+    ],
+    "Pop": [
+        "Pop"
+    ],
+    "Electronic": [
+        "Electronic"
+    ],
+    "Country": [
+        "Country"
+    ],
+    "Pop_Contemporary": [
+        "Pop"
+    ],
+    "RnB": [
+        "RnB"
+    ],
+    "Rock_Contemporary": [
+        "Rock"
+    ],
+    "Latin": [
+        "World"
+    ],
+    "Jazz": [
+        "Jazz"
+    ],
+    "Country_Traditional": [
+        "Country"
+    ],
+    "Dance": [
+        "Electronic"
+    ],
+    "Rock_Hard": [
+        "Rock"
+    ],
+    "Metal": [
+        "Rock"
+    ],
+    "Pop_Indie": [
+        "Pop"
+    ],
+    "Metal_Alternative": [
+        "Rock"
+    ],
+    "Rap": [
+        "RnB"
+    ],
+    "International": [
+        "World"
+    ],
+    "Rock_College": [
+        "Rock"
+    ],
+    "Folk": [
+        "Country"
+    ],
+    "Pop_Latin": [
+        "Pop"
+    ],
+    "Rock_Alternative": [
+        "Rock"
+    ],
+    "Experimental": [
+        "Electronic"
+    ],
+    "Hip_Hop_Rap": [
+        "RnB"
+    ],
+    "Religious": [
+        "Other"
+    ],
+    "New_Age": [
+        "Other"
+    ],
+    "Vocal": [
+        "Jazz"
+    ],
+    "Blues": [
+        "Jazz"
+    ],
+    "Folk_International": [
+        "Country"
+    ],
+    "RnB_Soul": [
+        "RnB"
+    ],
+    "Rock_Neo_Psychedelia": [
+        "Rock"
+    ],
+    "Reggae": [
+        "World"
+    ],
+    "Electronica": [
+        "Electronic"
+    ],
+    "Gospel": [
+        "Other"
+    ],
+    "Easy_Listening": [
+        "Other"
+    ],
+    "Grunge_Emo": [
+        "Rock"
+    ],
+    "Metal_Heavy": [
+        "Rock"
+    ],
+    "Metal_Death": [
+        "Rock"
+    ],
+    "World": [
+        "World"
+    ],
+    "Jazz_Classic": [
+        "Jazz"
+    ],
+    "Punk": [
+        "Rock"
+    ],
+    "Big_Band": [
+        "Jazz"
+    ],
+    "Blues_Contemporary": [
+        "Jazz"
+    ],
+    "Classical": [
+        "Other"
+    ],
+    "Stage": [
+        "Other"
+    ],
+    "Children": [
+        "Other"
+    ],
+    "Comedy_Spoken": [
+        "Other"
+    ],
+    "Holiday": [
+        "Other"
+    ],
+    "Avant_Garde": [
+        "Other"
+    ]
+}
 
 def get_files_names(genre_path: str):
     metadata_files = []
-    for file in os.listdir(genre_path):
+    for file in sorted(os.listdir(genre_path)):
         metadata_files.append(file[:-4])
 
     return metadata_files
@@ -17,18 +166,18 @@ def get_lmd_tracks(save_file:str = "lmd_tracks"):
 
     This function create lmd_tracks
     """
-    print("Start retreiving all tracks from the lmd database.")
+    print("Start retrieving all tracks from the LMD database.")
     all_tracks = set()
     for track in os.listdir("./midi/lmd_matched_flat"):
         all_tracks.add(track)
-    print("Outputing into '" + save_file + "'.")
+    print("Writing track list to '" + save_file + "'.")
 
     if (not os.path.exists("./results/tracks/")):
         os.mkdir("./results/tracks/")
 
     with open("./results/tracks/" + save_file, "w") as f:
-        f.write('\n'.join(all_tracks))
-    print("Finished task")
+        f.write('\n'.join(sorted(all_tracks)))
+    print("Finished task.")
 
 def get_metadata_file_mapping(file_name: str, output_name: str = None):
     """
@@ -43,11 +192,11 @@ def get_metadata_file_mapping(file_name: str, output_name: str = None):
     if (output_name == None):
         output_name = file_name[:-4]
 
-    print("Start retreiving all tracks and their genre from " + file_name + ".")
+    print("Start retrieving all tracks and their genres from " + file_name + ".")
     tracks = {}
     tracks_str = ""
 
-    file = open("./genre/metadata_files/" + file_name, "r")
+    file = open("./genre/" + file_name, "r")
     for line in file:
         if line[0] == '#':
             continue
@@ -61,13 +210,14 @@ def get_metadata_file_mapping(file_name: str, output_name: str = None):
 
             tracks[track_id].add(splitted_line[k].strip())
 
-    for key in tracks.keys():
-        tracks_str += key + " " + " ".join(tracks[key]) + "\n"
+    for key in sorted(tracks.keys()):
+        tracks_str += key + " " + " ".join(sorted(tracks[key])) + "\n"
     with open("./results/tracks/" + output_name, "w") as f:
         f.write(tracks_str)
 
-    return tracks
+    file.close()
 
+    return tracks
 
 def get_all_metadata_files_mapping(files_paths: list[str], save_file:str = "all_tracks"):
     """
@@ -79,23 +229,23 @@ def get_all_metadata_files_mapping(files_paths: list[str], save_file:str = "all_
     Returns:
         all_tracks (set): Set containing all tracks names.
     """
-    print("Start retreiving all tracks and their genre from the different databases.")
+    print("Start retrieving all tracks and their genres from all datasets.")
     all_tracks = {}
     all_tracks_str = ""
 
-    for file_path in files_paths:
+    for file_path in sorted(files_paths):
         single_file_tracks = get_metadata_file_mapping(file_path + ".cls", file_path)
-        for key in single_file_tracks.keys():
+        for key in sorted(single_file_tracks.keys()):
             if key not in all_tracks:
                 all_tracks[key] = []
             all_tracks[key] += single_file_tracks[key]
 
-    for key in all_tracks.keys():
-        all_tracks_str += key + " " + " ".join(all_tracks[key]) + "\n"
+    for key in sorted(all_tracks.keys()):
+        all_tracks_str += key + " " + " ".join(sorted(all_tracks[key])) + "\n"
     with open("./results/tracks/" + save_file, "w") as f:
         f.write(all_tracks_str)
 
-    print("Finished task")
+    print("Finished task.")
     return all_tracks
 
 def check_diff(file_name:str, source_file_name:str="lmd_tracks"):
@@ -108,7 +258,7 @@ def check_diff(file_name:str, source_file_name:str="lmd_tracks"):
 
     This function create `metadata_file_name`_diff
     """
-    print("Start checking the intersection between the " + file_name + " and the " + source_file_name)
+    print("Start checking the intersection between " + file_name + " and " + source_file_name + ".")
     metadata = open("./results/tracks/" + file_name, "r")
     lmd = open("./results/tracks/" + source_file_name, "r")
     metadata_tracks = {}
@@ -130,14 +280,17 @@ def check_diff(file_name:str, source_file_name:str="lmd_tracks"):
         os.mkdir("./results/diff/")
 
     with open("./results/diff/" + file_name, "w") as f:
-        f.write('\n'.join(results))
-    print("Finished task")
+        f.write('\n'.join(sorted(results)))
+    print("Finished task.")
+    
+    metadata.close()
+    lmd.close()
 
 def check_all_diffs(all_files:list[str]):
     """
     Checks the tracks difference between every dataset.
     """
-    for file_name in all_files:
+    for file_name in sorted(all_files):
         get_metadata_file_mapping(file_name + ".cls")
         check_diff(file_name)
     get_all_metadata_files_mapping(all_files)
@@ -149,7 +302,7 @@ def get_metadata_file_genres(file_name: str, output_name: str = None, do_set_map
 
     This function create msd_tagtraum_cd1, msd_tagtraum_cd2c, msd-MAGD-genreAssignment, msd-MASD-styleAssignment and msd-topMAGD-genreAssignment 
     """
-    print("Start checking the count of the different genres of " + file_name)
+    print("Start counting the different genres in " + file_name + ".")
     if (output_name == None):
         output_name = file_name
 
@@ -173,12 +326,14 @@ def get_metadata_file_genres(file_name: str, output_name: str = None, do_set_map
 
     with open("./results/genres/" + output_name, "w") as f:
         f.write('\n'.join(items[0] + " " + str(items[1]) for items in sorted(all_genres.items(), key=lambda x: x[1], reverse=True)))
+    
+    tracks.close()
 
 def get_all_metadata_files_genres(all_files:list[str]):
     """
     Checks the tracks difference between every dataset.
     """
-    for file_name in all_files:
+    for file_name in sorted(all_files):
         get_metadata_file_genres(file_name)
     get_all_metadata_files_mapping(all_files)
     get_metadata_file_genres("all_tracks", do_set_mapping=False)
@@ -187,7 +342,7 @@ def sort_matched_tracks():
     """
     Copy all the tracks where we have genre.
     """
-    print("Start coping file where we have the genre")
+    print("Start copying files which have a known genre.")
     matched = open("./results/diff/all_tracks", "r")
     matched_tracks = set()
 
@@ -197,20 +352,21 @@ def sort_matched_tracks():
     if (not os.path.exists("./midi/lmd_matched_genre")):
         os.mkdir("./midi/lmd_matched_genre")
 
-    for track in os.listdir("./midi/lmd_matched_flat"):
-        if track in matched_tracks:
+    for track in sorted(os.listdir("./midi/lmd_matched_flat")):
+        if track in sorted(matched_tracks):
             if (not os.path.exists("./midi/lmd_matched_genre/" + track)):
                 os.mkdir("./midi/lmd_matched_genre/" + track)
 
-            for file in os.listdir("./midi/lmd_matched_flat/" + track):
+            for file in sorted(os.listdir("./midi/lmd_matched_flat/" + track)):
                 copy2("./midi/lmd_matched_flat/" + track + "/" + file, "./midi/lmd_matched_genre/" + track + "/" + file)
-    print("Finished task")
+    print("Finished task.")
+    
+    matched.close()
 
-def set_definitive_genre(genre_mapping_path: str):
+def set_definitive_genre(genre_mapping_dict: dict):
     tracks = open("./results/diff/all_tracks", "r")
-    mapping_file = open(genre_mapping_path, "r")
 
-    mapping_json = json.load(mapping_file)
+    mapping_json = genre_mapping_dict
 
     track_mapping = {}
     count_mapping = {}
@@ -228,12 +384,14 @@ def set_definitive_genre(genre_mapping_path: str):
                     track_genres[genre] = 0
                 track_genres[genre] += 1
 
-        track_mapping[title] = max(track_genres, key=track_genres.get)
+        track_mapping[title] = sorted(
+            track_genres.items(),
+            key=lambda kv: (-kv[1], kv[0])  # higher count first, then lexicographically
+        )[0][0]
         selection += title + " : " + str(track_genres) + " -> " + str(track_mapping[title]) + "\n"
         if (max(track_genres, key=track_genres.get) not in count_mapping):
             count_mapping[max(track_genres, key=track_genres.get)] = 0
         count_mapping[max(track_genres, key=track_genres.get)] += 1
-
 
     if (not os.path.exists("./results/mapping/")):
         os.mkdir("./results/mapping/")
@@ -242,14 +400,20 @@ def set_definitive_genre(genre_mapping_path: str):
         f.write('\n'.join(items[0] + " " + str(items[1]) for items in sorted(track_mapping.items(), key=lambda x: x[1], reverse=True)))
     with open("./results/mapping/selection", "w") as f:
         f.write(selection)
-    print(count_mapping)
-
+    print("Here is the final mapping counts:", count_mapping)
+    
+    tracks.close()
 
 
 if __name__ == "__main__":
-    metadata_files = get_files_names("./genre/metadata_files")
+    metadata_files = get_files_names("./genre")
     get_lmd_tracks()
     get_all_metadata_files_genres(metadata_files)
     # sort_matched_tracks()
 
-    set_definitive_genre("./genre/mapping.json")
+    set_definitive_genre(genre_mapping_dict)
+    
+    with open("./results/mapping/all_tracks", "r") as file:
+        json_content = "{\n" + "".join(["\t\"" + line.split(" ")[0] + "\"" + ": " + "\"" + line.split(" ")[1].replace("\n", "") + "\",\n" for line in file.readlines()])[:-1] + "\n}"
+    with open("./results/all_tracks.json", "w") as file:
+        file.write(json_content)
