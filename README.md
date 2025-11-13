@@ -226,6 +226,7 @@ Clears all generated data from the pipeline, including results. Useful when the 
 
 - [ ] Double-check that ABC note tokenization produces unique tokens.
 - [ ] Ensure that genre assignment is deterministic in the case of ties or ambiguous mappings.
+- [ ] Remove dependencies.
 - [ ] Explore further applications...
 
 ---
