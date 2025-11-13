@@ -127,9 +127,9 @@ Bootstrap all third-party tools used by the pipeline: the **abcMIDI** suite (for
 
      * Linux: replace `'/path/to/musescore/binary/parent/directory'` with the real directory containing the MuseScore CLI binary (e.g., `/usr/bin` or `/nix/store/...`).
      * Windows: confirm the `mklink` command points to something like `C:\Program Files\MuseScore 4\bin`.
-	 
+
    * Remove the `exit 1` (by design until you edit paths and uncomment the correct setup function)
-  
+
 2. Optionally comment the final `git restore setup_softwares.sh` (otherwise your edits will be reverted, which is handy once you've learned the exact steps).
 
 ---
@@ -267,7 +267,7 @@ Clears all generated data from the pipeline, including results. Useful when the 
 - **Julien Zébic** — [@Gapagapi1] — Project Motivation; Early Dataset Exploration; Conceptualization; Data Investigation; Software; Midi/ABC Pipeline; Instrument Categorization; Writing & Publication
   *Designed and implemented the end-to-end data pipeline (scheduler & parallel execution, MIDI to ABC conversion/cleaning, MuseScore sanitization & metadata verification / matching, MusicXML path exploration, ABC tokenization, refactors); Ran experiments from experiments to last full run and prepared the final pipeline result.*
 
-- **Thomas Leguéré** — [@ThomasLeguere] — Early Dataset Exploration; Conceptualization; Software; Genre Handling
+- **Thomas Leguéré** — [@ThomasLeguere] — Early Dataset Exploration; Conceptualization; Data Investigation; Software; Genre Handling
   *Implemented track/genre matching and mapping (including label balancing); built matching utilities, labelled-data sorting, and related work for the genre pipeline.*
 
 - **Loïs Bréant** — [@loisBreant] — Data Investigation; Data Visualization

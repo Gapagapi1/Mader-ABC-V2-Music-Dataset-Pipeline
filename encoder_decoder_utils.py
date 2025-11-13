@@ -275,7 +275,7 @@ def decode_tokens_to_abc(tokens: List[str], is_concat_chord: bool = False, heade
             is_float = True
         except ValueError:
             pass
-        
+
         if isinstance(token, float) or (isinstance(token, str) and '.' in str(token) and is_float):
             frac = Fraction(str(token)).limit_denominator(16)
             if frac == 1:
@@ -370,12 +370,12 @@ K:C
 
 if __name__ == "__main__":
     # EXAMPLES:
-    # 1) Text -> memory
+    # 1) ABC string -> Token list
     # ok, result = encode_abc_to_tokens(abc_text_string, "path/to/musescore_metadata.json")
     # if ok:
     #     print(result)
 
-    # 2) Tokens (list) -> ABC string
+    # 2) Token list (may contain multiple voices) -> ABC string list (one for each voice)
     # abc_str = decode_tokens_to_abc(["C4", "1.0", "E4", "1.0", "[", "G4", "C5", "]", "2.0"], is_concat_chord=False)
     # print(abc_str)
     pass
