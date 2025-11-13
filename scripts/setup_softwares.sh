@@ -45,4 +45,4 @@ setup_softwares_windows () {
 # setup_softwares_linux
 # setup_softwares_windows
 
-git restore setup_softwares.sh
+git restore ./scripts/setup_softwares.sh
