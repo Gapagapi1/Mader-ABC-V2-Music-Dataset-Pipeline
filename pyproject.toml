@@ -1,0 +1,10 @@
+[project]
+name = "mader_abc_v2_music_dataset_pipeline"
+version = "1.0.0"
+description = "Converts raw MIDI collections into a clean, normalized, tokenized ABC corpus."
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "music21>=9.9.1",
+    "psutil>=7.1.3",
+]

@@ -1,10 +1,12 @@
 **/.ipynb_checkpoints
 **/.idea
 **/__pycache__
+**/.venv
 
 midi
 genre
 archives
+data
 
 results/*
 !results/.gitkeep
