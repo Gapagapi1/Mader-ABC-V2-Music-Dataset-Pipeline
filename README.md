@@ -19,7 +19,7 @@ The pipeline relies on well-established tooling:
 * **midi2abc** for MIDI to ABC conversion (with specific flags to standardize key/armature and formatting). 
 * **music21** for ABC validation/cleaning and feature extraction. 
 
-> Background and design choices are documented in the associated [report](./report.md). 
+> Background and design choices are documented in the associated [report](./REPORT.md). 
 
 ---
 
