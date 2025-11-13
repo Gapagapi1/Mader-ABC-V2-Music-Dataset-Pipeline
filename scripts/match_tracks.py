@@ -401,7 +401,7 @@ def set_definitive_genre(genre_mapping_dict: dict):
     with open("./results/mapping/selection", "w") as f:
         f.write(selection)
     print("Here is the final mapping counts:", count_mapping)
-    
+
     tracks.close()
 
 
@@ -412,8 +412,8 @@ if __name__ == "__main__":
     # sort_matched_tracks()
 
     set_definitive_genre(genre_mapping_dict)
-    
+
     with open("./results/mapping/all_tracks", "r") as file:
-        json_content = "{\n" + "".join(["\t\"" + line.split(" ")[0] + "\"" + ": " + "\"" + line.split(" ")[1].replace("\n", "") + "\",\n" for line in file.readlines()])[:-1] + "\n}"
+        json_content = "{\n" + "".join(["\t\"" + line.split(" ")[0] + "\"" + ": " + "\"" + line.split(" ")[1].replace("\n", "") + "\",\n" for line in file.readlines()])[:-2] + "\n}"
     with open("./results/msd_trackid_to_genre.json", "w") as file:
         file.write(json_content)
