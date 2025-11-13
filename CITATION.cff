@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+message: "If you use the Mader ABC V2 - Music Dataset Pipeline in your work, please cite it as below."
+title: "Mader ABC V2 – Music Dataset Pipeline"
+version: "1.0.0"
+type: software
+authors:
+  - given-names: Julien
+    family-names: Zébic
+  - given-names: Thomas
+    family-names: Leguéré
+  - given-names: Loïs
+    family-names: Bréant
+repository-code: "https://github.com/Gapagapi1/Mader-ABC-V2-Music-Dataset-Pipeline"
+url: "https://github.com/Gapagapi1/Mader-ABC-V2-Music-Dataset-Pipeline"
+license: "MIT"
+abstract: >
+  The Mader ABC V2 Music Dataset Pipeline is an end-to-end data preparation
+  framework that converts MIDI collections into a clean, normalized,
+  tokenized ABC corpus suitable for symbolic music classification and
+  generation. It integrates MuseScore, midi2abc, and music21 to sanitize,
+  convert, and validate musical data, and produces a ready-to-train dataset
+  aligned with the Mader ABC V2 family of projects.
+keywords:
+  - music generation
+  - symbolic music
+  - data pipeline
+  - ABC notation
+  - MIDI
+  - dataset preparation
+preferred-citation:
+  type: software
+  title: "Mader ABC V2 – Music Dataset Pipeline"
+  authors:
+    - given-names: Julien
+      family-names: Zébic
+    - given-names: Thomas
+      family-names: Leguéré
+    - given-names: Loïs
+      family-names: Bréant
+  year: 2025
+  version: "1.0.0"
+  url: "https://github.com/Gapagapi1/Mader-ABC-V2-Music-Dataset-Pipeline"
