@@ -277,20 +277,6 @@ Clears all generated data from the pipeline, including results. Useful when the 
 
 ## 📚 Citation
 
-If this pipeline or dataset formulation helps your work, consider citing the project/report (see [report](./report.md)), the upstream datasets and the tools used. 
+If this pipeline or dataset formulation helps your work, consider citing the project, the upstream datasets and the tools used.
 
-In plain text:
-```text
-Zébic, J., Leguéré, T., Bréant, L. (2025). Mader ABC V2 - Music Dataset Pipeline (v1.0.0) [Software]. GitHub. https://github.com/Gapagapi1/Mader-ABC-V2-Music-Dataset-Pipeline/.
-```
-
-As BibTeX:
-```bibtex
-@software{zebic2025mader_abc_v2_music_dataset_pipeline,
-  title        = {Mader ABC V2 - Music Dataset Pipeline},
-  author       = {Zébic, Julien and Leguéré, Thomas and Bréant, Loïs},
-  year         = {2025},
-  version      = {1.0.0},
-  note         = {MIT-licensed code; artifacts carry different licenses}
-}
-```
+For this project, please use the "Cite this repository" button in the about section of this repository.
