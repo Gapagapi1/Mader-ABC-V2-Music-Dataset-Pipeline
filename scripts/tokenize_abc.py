@@ -287,9 +287,9 @@ if __name__ == "__main__":
 
     def wrong_abc(from_path: str, reason: str):
         wrong_abc_files.update({from_path: reason})
-        print("[clean_abc]", from_path, "is a wrong abc file:", reason)
+        print("[tokenize_abc]", from_path, "is a wrong abc file:", reason)
 
-    process = Process("clean_abc", "./midi/lmd_matched_flat_sanitized_abc_clean", "./midi/lmd_matched_flat_sanitized_abc_clean_tokenized")
+    process = Process("tokenize_abc", "./midi/lmd_matched_flat_sanitized_abc_clean", "./midi/lmd_matched_flat_sanitized_abc_clean_tokenized")
     results = process.step_by_function(process_function, path_converter=path_converter, useProcessExecutor=True)
 
     for res in results:
