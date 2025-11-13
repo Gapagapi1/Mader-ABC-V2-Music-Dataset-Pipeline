@@ -240,16 +240,24 @@ Clears all generated data from the pipeline, including results. Useful when the 
 ## 🪶 Attribution
 
 - [Lakh MIDI Dataset](https://colinraffel.com/projects/lmd/)
+
 > Colin Raffel. **"Learning-Based Methods for Comparing Sequences, with Applications to Audio-to-MIDI Alignment and Matching"**. PhD Thesis, 2016.
 
+
 - [Million Song Dataset](http://millionsongdataset.com/)
+
 > Thierry Bertin-Mahieux, Daniel P. W. Ellis, Brian Whitman, and Paul Lamere. **"The Million Song Dataset"**. In Proceedings of the 12th International Society for Music Information Retrieval Conference, pages 591–596, 2011.
 
+
 - [Million Song Dataset Benchmarks](https://www.ifs.tuwien.ac.at/mir/msd/)
+
 > Alexander Schindler, Rudolf Mayer and Andreas Rauber. Facilitating comprehensive benchmarking experiments on the million song dataset. In Proceedings of the 13th International Society for Music Information Retrieval Conference (ISMIR 2012), 2012. \[[pdf](http://www.ifs.tuwien.ac.at/~schindler/pubs/ISMIR2012.pdf)\]
+
 > Alexander Schindler and Andreas Rauber. Capturing the temporal domain in Echonest Features for improved classification effectiveness. In Proceedings of the 10th International Workshop on Adaptive Multimedia Retrieval (AMR 2012) to appear, 2012. \[[pdf](http://www.ifs.tuwien.ac.at/~schindler/pubs/AMR2012.pdf)\]
 
+
 - [Tagtraum genre annotations for the Million Song Dataset](https://www.tagtraum.com/msd_genre_datasets.html)
+
 > Hendrik Schreiber. [Improving Genre Annotations for the Million Song Dataset.](https://www.tagtraum.com/download/schreiber_msdgenre_ismir2015.pdf) In Proceedings of the 16th International Society for Music Information Retrieval Conference (ISMIR), pages 241-247, Málaga, Spain, Oct. 2015. \[[slides](https://speakerdeck.com/hendriks73/improving-genre-annotations-for-the-million-song-dataset)\] 
 
 ---
