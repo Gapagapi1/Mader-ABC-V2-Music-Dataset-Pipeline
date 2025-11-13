@@ -203,14 +203,14 @@ def voice_to_tokens(voice):
         elif isinstance(token, music21.abcFormat.ABCChord):
             tokens.append("[")
             for note in token.src.replace("[", "").split("]")[0].split(" "):
-                tokens.append(get_note_tok_name(token, note))
+                tokens.append(str(get_note_tok_name(token, note)))
             tokens.append("]")
-            tokens.append(token.getQuarterLength(strSrc=token.src))
+            tokens.append(str(token.getQuarterLength(strSrc=token.src)))
         elif isinstance(token, music21.abcFormat.ABCNote):
-            tokens.append(get_note_tok_name(token))
-            tokens.append(token.getQuarterLength(strSrc=token.src))
+            tokens.append(str(get_note_tok_name(token)))
+            tokens.append(str(token.getQuarterLength(strSrc=token.src)))
         else:
-            unused_tokens.add(token.src)
+            unused_tokens.add(str(token.src))
     return tokens, unused_tokens
 
 def process_function(from_path: str, to_path: str):
