@@ -80,10 +80,9 @@ def iter_dataset(root: Path, glob_str: str, compiled_regex, is_abc_text_corpus: 
                     "voice_index": voice_idx,
                     "program_id": int(vm["program_id"]),
                     "program_name": vm["program_name"],
-                    "category_id": int(vm["category_id"]),
-                    "category_name": instrument_to_id[vi],
                     "musescore_info": vm["musescore_info"],
-                    "genre": g_id,
+                    "instrument_category": instrument_to_id[vi],
+                    "genre_category": g_id,
                     "abc_text" if is_abc_text_corpus else "token_sequence": content,
                 }
 

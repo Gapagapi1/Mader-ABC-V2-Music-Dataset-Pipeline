@@ -242,7 +242,7 @@ Clears all generated data from the pipeline, including results. Useful when the 
 ## 👥 Author Contributions
 
 - **Julien Zébic** — [@Gapagapi1] — Project Motivation; Early Dataset Exploration; Conceptualization; Data Investigation; Software; Midi/ABC Pipeline; Instrument Categorization; Writing & Publication
-  *Designed and implemented the end-to-end data pipeline (scheduler & parallel execution, MIDI to ABC conversion/cleaning, MuseScore sanitization & metadata verification / matching, MusicXML path exploration, ABC tokenization, refactors); Ran experiments from experiments to last full run and prepared the final pipeline result.*
+  *Designed and implemented the end-to-end data pipeline (scheduler & parallel execution, MIDI to ABC conversion/cleaning, MuseScore sanitization & metadata verification / matching, MusicXML path exploration, ABC tokenization, refactors); Ran experiments up to last full run and prepared the final pipeline result.*
 
 - **Thomas Leguéré** — [@ThomasLeguere] — Early Dataset Exploration; Conceptualization; Data Investigation; Software; Genre Handling
   *Implemented track/genre matching and mapping (including label balancing); built matching utilities, labelled-data sorting, and related work for the genre pipeline.*
