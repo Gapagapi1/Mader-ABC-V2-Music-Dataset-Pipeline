@@ -1,6 +1,6 @@
 # 🎵 Mader ABC V2 - Music Dataset Pipeline
 
-This repository contains a **data pipeline** that converts raw MIDI collections into a **clean, normalized, tokenized ABC corpus** suitable for music classification and generation tasks. At a high level, the pipeline:
+This repository contains a **data pipeline** that converts raw [MIDI](https://en.wikipedia.org/wiki/MIDI) collections into a **clean, normalized, tokenized** [ABC](https://en.wikipedia.org/wiki/ABC_notation) **corpus** suitable for music classification and generation tasks. At a high level, the pipeline:
 
 1. Installs required tools,
 2. Fetches and lays out the raw data,
