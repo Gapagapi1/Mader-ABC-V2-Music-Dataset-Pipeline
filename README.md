@@ -34,14 +34,13 @@ This work is part of a 4-part project:
 
 ## 💻 Platform & Compatibility
 
-* The pipeline has been **tested on MINGW64 UCRT** (Git Bash / MSYS2 environment on Windows).
-* Each part of the code was **written with Unix/POSIX/Linux compatibility in mind** but **not fully tested** there yet. It should be relatively straightforward to adapt any left over Windows specifics; each step where a manual action is needed on Linux has been documented as inline instructions in the scripts.
-* If you're on **Linux**, run the scripts in order; inline usage messages and any errors should help you adjust minor incompatibilities as you go.
+* The pipeline has been **tested on MINGW64 UCRT** (Git Bash / MSYS2 environment on Windows) **and on Linux** (NixOS).
+* Each part of the code was **written with Unix/POSIX/Linux compatibility in mind**.
 
 
 ## 📋 Prerequisites
 
-* Bash shell (MINGW64 UCRT (MSYS2), or a standard Unix shell), `wget`, `tar` and `unzip`
+* Bash shell, `wget`, `tar` and `unzip`
 * Disk space and a file system that allows for a lot of files (~4,500,000 Files, ~100 GB)
 * Python 3 (tested with 3.11), with the python environment described in `pyproject.toml`
 * MuseScore 4
@@ -205,7 +204,6 @@ Clears all generated data from the pipeline, including results. Useful when the 
 
 * **MuseScore CLI not found?**: See the `setup_softwares.sh` section and ensure `musescore` is correctly linked to Musescore's installation directory. 
 * **midi2abc errors on certain files?**: That's expected for some MIDI variants; ensure `sanitize_midi.sh` ran; if a file still fails, the cleaner script may fall back to the original MIDI in a second pass. 
-* **Linux**: See the **Platform & Compatibility section** above.
 
 
 ## ⏳ TODO
