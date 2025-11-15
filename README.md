@@ -15,19 +15,19 @@ This repository contains a **data pipeline** that converts raw MIDI collections 
 
 The pipeline relies on well-established tooling:
 
-* **MuseScore CLI** for robust MIDI parsing/normalization and metadata export, especially where other tools struggle with timing/quantization variants. 
-* **midi2abc** for MIDI to ABC conversion (with specific flags to standardize key/armature and formatting). 
-* **music21** for ABC validation/cleaning and feature extraction. 
+* **MuseScore CLI** for robust MIDI parsing/normalization and metadata export, especially where other tools struggle with timing/quantization variants.
+* **midi2abc** for MIDI to ABC conversion (with specific flags to standardize key/armature and formatting).
+* **music21** for ABC validation/cleaning and feature extraction.
 
-> Background and design choices are documented in the associated [report](./REPORT.md). 
+> Background and design choices are documented in the associated [report](./REPORT.md).
 
 
 ## 🧭 Project Family
 
 This work is part of a 4-part project:
 
-1. **Data Pipeline** → (this repo) – The dataset pipeline code.  
-2. **Dataset** → [🤗 Mader ABC V2 - Music Dataset](https://huggingface.co/datasets/Gapagapi1/mader-abc-v2-music-dataset) – Ready-to-use tokenized dataset.  
+1. **Data Pipeline** → (this repo) – The dataset pipeline code.
+2. **Dataset** → [🤗 Mader ABC V2 - Music Dataset](https://huggingface.co/datasets/Gapagapi1/mader-abc-v2-music-dataset) – Ready-to-use tokenized dataset.
 3. **Model Code** → [GitHub: Mader ABC V2 - Music Model Architectures](https://github.com/Gapagapi1/mader-abc-v2-music-model-architectures) – Model architectures and training scripts for music classification and generation.
 4. **Trained Models** → [🤗 Mader ABC V2 - Music Models](https://huggingface.co/models?search=Gapagapi1) – Pretrained checkpoints for generation and classification models.
 
@@ -178,6 +178,8 @@ Split multi-voice ABC files into individual per-track files by detecting `V:` se
 
 Aggregate all processed MIDI-derived files into a unified Hugging Face compatible dataset by reading tokenized voices, ABC tracks, and genre labels, then exporting them as structured Parquet shards.
 
+See [🤗 Mader ABC V2 - Music Dataset](https://huggingface.co/datasets/Gapagapi1/mader-abc-v2-music-dataset) for more information on the resulting dataset structure.
+
 
 ### 12) `./scripts/all_tokens.py` (optional)
 
@@ -236,7 +238,7 @@ Clears all generated data from the pipeline, including results. Useful when the 
 
 - [Tagtraum genre annotations for the Million Song Dataset](https://www.tagtraum.com/msd_genre_datasets.html)
 
-> Hendrik Schreiber. [Improving Genre Annotations for the Million Song Dataset.](https://www.tagtraum.com/download/schreiber_msdgenre_ismir2015.pdf) In Proceedings of the 16th International Society for Music Information Retrieval Conference (ISMIR), pages 241-247, Málaga, Spain, Oct. 2015. \[[slides](https://speakerdeck.com/hendriks73/improving-genre-annotations-for-the-million-song-dataset)\] 
+> Hendrik Schreiber. [Improving Genre Annotations for the Million Song Dataset.](https://www.tagtraum.com/download/schreiber_msdgenre_ismir2015.pdf) In Proceedings of the 16th International Society for Music Information Retrieval Conference (ISMIR), pages 241-247, Málaga, Spain, Oct. 2015. \[[slides](https://speakerdeck.com/hendriks73/improving-genre-annotations-for-the-million-song-dataset)\]
 
 
 ## 👥 Author Contributions
