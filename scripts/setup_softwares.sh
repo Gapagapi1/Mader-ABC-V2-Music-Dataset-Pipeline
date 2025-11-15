@@ -3,6 +3,7 @@
 set -e
 
 mkdir -p archives
+mkdir -p softwares
 
 echo "Edit this script with the correct path first and appropriate functions called."
 exit 1

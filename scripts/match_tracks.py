@@ -282,7 +282,7 @@ def check_diff(file_name:str, source_file_name:str="lmd_tracks"):
     with open("./results/diff/" + file_name, "w") as f:
         f.write('\n'.join(sorted(results)))
     print("Finished task.")
-    
+
     metadata.close()
     lmd.close()
 
@@ -326,7 +326,7 @@ def get_metadata_file_genres(file_name: str, output_name: str = None, do_set_map
 
     with open("./results/genres/" + output_name, "w") as f:
         f.write('\n'.join(items[0] + " " + str(items[1]) for items in sorted(all_genres.items(), key=lambda x: x[1], reverse=True)))
-    
+
     tracks.close()
 
 def get_all_metadata_files_genres(all_files:list[str]):
@@ -360,7 +360,7 @@ def sort_matched_tracks():
             for file in sorted(os.listdir("./midi/lmd_matched_flat/" + track)):
                 copy2("./midi/lmd_matched_flat/" + track + "/" + file, "./midi/lmd_matched_genre/" + track + "/" + file)
     print("Finished task.")
-    
+
     matched.close()
 
 def set_definitive_genre(genre_mapping_dict: dict):
@@ -406,6 +406,7 @@ def set_definitive_genre(genre_mapping_dict: dict):
 
 
 if __name__ == "__main__":
+    os.makedirs("./results", exist_ok=True)
     metadata_files = get_files_names("./genre")
     get_lmd_tracks()
     get_all_metadata_files_genres(metadata_files)

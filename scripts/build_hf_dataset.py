@@ -43,7 +43,7 @@ def iter_dataset(root: Path, glob_str: str, compiled_regex, is_abc_text_corpus: 
             if not arr_dir.is_dir():
                 continue
             arrangement_id = arr_dir.name
-            meta_path = arr_dir / "metadata.json"
+            meta_path = TOK_ROOT / track_id / arrangement_id / "metadata.json"
             if not meta_path.exists():
                 print(f"WARNING: meta_path '{meta_path}' does not exist.")
                 continue
@@ -91,7 +91,7 @@ def iter_dataset(root: Path, glob_str: str, compiled_regex, is_abc_text_corpus: 
 def write_parquet_shards(rows_iter, out_path):
     out_path.mkdir(parents=True, exist_ok=True)
     batch = []
-    part_idx = None
+    part_idx = 0
     for idx, row in tqdm(enumerate(rows_iter, 1)):
         batch.append(row)
         if len(batch) >= SHARD_ROWS:
