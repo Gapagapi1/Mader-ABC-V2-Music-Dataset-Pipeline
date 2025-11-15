@@ -27,9 +27,9 @@ The pipeline relies on well-established tooling:
 This work is part of a 4-part project:
 
 1. **Data Pipeline** → (this repo) – The dataset pipeline code.
-2. **Dataset** → [🤗 Mader ABC V2 - Music Dataset](https://huggingface.co/datasets/Gapagapi1/mader-abc-v2-music-dataset) – Ready-to-use tokenized dataset.
-3. **Model Code** → [GitHub: Mader ABC V2 - Music Model Architectures](https://github.com/Gapagapi1/mader-abc-v2-music-model-architectures) – Model architectures and training scripts for music classification and generation.
-4. **Trained Models** → [🤗 Mader ABC V2 - Music Models](https://huggingface.co/models?search=Gapagapi1) – Pretrained checkpoints for generation and classification models.
+2. **Dataset** → [🤗 Mader ABC V2 - Music Dataset](https://huggingface.co/datasets/Gapagapi1/mader-abc-v2-music-dataset) – Ready-to-use dataset.
+3. **Model Code** → [GitHub: Mader ABC V2 - Music Model Architectures](https://github.com/Gapagapi1/mader-abc-v2-music-model-architectures) – Model architectures and training scripts for music classification and generation. (WIP)
+4. **Trained Models** → [🤗 Mader ABC V2 - Music Models](https://huggingface.co/models?search=Gapagapi1) – Pretrained checkpoints for generation and classification models. (WIP)
 
 
 ## 💻 Platform & Compatibility
@@ -53,9 +53,9 @@ This work is part of a 4-part project:
 # 0) Clone this repo, then create the Python environment (here, with `uv`)
 uv sync
 
-# 1) then run the pipeline in order:
+# 1) Then, run the pipeline in order:
 ./scripts/setup_softwares.sh
-uv run ./scripts/setup_data.sh
+./scripts/setup_data.sh
 uv run ./scripts/flatten.py
 uv run ./scripts/match_tracks.py
 uv run ./scripts/generate_metadata.py
@@ -72,15 +72,16 @@ uv run ./scripts/build_hf_dataset.py
 # Get the vocabulary of the token dataset.
 uv run ./scripts/all_tokens.py
 
-# You can replace ./scripts/convert_to_abc.py with the following script if you want to convert midi to musicxml rather than abc.
+# You can replace ./scripts/convert_to_abc.py with the following script
+# if you want to convert midi to musicxml rather than abc.
 # Note that the pipeline ends at this point if you choose this path.
 uv run ./scripts/convert_to_musicxml.py
 
-# Clears everything (you probably don't want that)
+# Clears everything (you probably don't want that).
 ./scripts/clear_data.sh
 ```
 
-Each script will be documented in details in a following section.
+Each script is documented in details in a following section.
 
 Outputs will be created under project subfolders (see each script's description).
 
@@ -96,12 +97,12 @@ The repository and the folders created by the pipeline are organized as follows:
 | `archives/` | Pipeline | Stores **raw downloaded archives** and other temporary artifacts retrieved by `setup_data.sh`. The script unpacks them into working directories used by later steps. |
 | `data/` | Pipeline | Contains the **final Parquet-formatted dataset** produced by the pipeline. |
 | `genre/` | Pipeline | Holds the **genre annotation datasets** used for track/genre matching. |
-| `midi/` | Pipeline | Hierarchical structure with subfolders representing **each intermediate processing step** of the MIDI to ABC corpus. |
-| `results/` | Pipeline | Contains **outputs and intermediate results**, such as genre mappings, logs, token vocabularies, success/failure summaries, etc. |
+| `midi/` | Pipeline | Hierarchical structure with subfolders representing **each intermediate processing step** of the MIDI to ABC pipeline. |
+| `results/` | Pipeline | Contains **outputs and intermediate results**, such as genre mappings, logs, token vocabularies and success/failure summaries. |
 | `scripts/` | Repository | All **pipeline code and orchestration scripts**. This is where you'll find the step-by-step executables documented bellow. |
 | `softwares/` | Pipeline | Contains **downloaded third-party tools**, binaries, and symlinks (e.g., MuseScore CLI and abcMIDI suite) configured by `setup_softwares.sh`. These are required for MIDI to ABC conversion and metadata extraction. |
 
-> Note: Some of these directories (like `archives/`, `midi/`, `results/`, and `data/`) are **created automatically** when you run the pipeline for the first time. They may not appear in the repository until you execute the corresponding steps.
+> Note: As specified in the "Created By" column, some of these directories are **created automatically** when you run the pipeline for the first time. They will appear in the repository when you execute the corresponding steps.
 
 
 ## 🗂️ Pipeline Scripts
@@ -122,14 +123,18 @@ Bootstrap all third-party tools used by the pipeline: the **abcMIDI** suite (for
      * Linux: replace `'/path/to/musescore/binary/parent/directory'` with the real directory containing the MuseScore CLI binary (e.g., `/usr/bin` or `/nix/store/...`).
      * Windows: confirm the `mklink` command points to something like `C:\Program Files\MuseScore 4\bin`.
 
-   * Remove the `exit 1` (by design until you edit paths and uncomment the correct setup function)
+   * Remove the `exit 1` (by design until you edit paths and uncomment the correct setup function).
 
 2. Optionally comment the final `git restore setup_softwares.sh` (otherwise your edits will be reverted, which is handy once you've learned the exact steps).
+
+> In the event that links to the abcMIDI suite do not work anymore, I have made sure that they are all saved in the [Internet Archive Wayback Machine](https://web.archive.org/).
 
 
 ### 2) `./scripts/setup_data.sh`
 
-Fetch and organize all **source datasets and annotations** used by the pipeline. It downloads archives and plain files, extracts what's needed, and lays out a predictable directory structure so later steps can find MIDI and genre labels. The script is **idempotent**: it skips downloads/extractions that already exist.
+Fetch and organize all **source datasets and annotations** used by the pipeline. It downloads archives and plain files, extracts what's needed, and lays out a predictable directory structure so later steps can find MIDI files and genre labels. The script is **idempotent**: it skips downloads/extractions that already exist.
+
+> In the event that links to the datasets do not work anymore, I have made sure that they are all saved in the [Internet Archive Wayback Machine](https://web.archive.org/).
 
 
 ### 3) `./scripts/flatten.py`
@@ -166,12 +171,12 @@ Validate ABC files (meter, key, measures, notes, voice–metadata match), keep o
 
 Parse ABC files into per-voice token sequences (notes, chords, barlines, durations), attach instrument/category metadata from MuseScore, and log unused tokens and failures.
 
-`encoder_decoder_utils.py` provides a way to convert ABC from tokenized to valid abc file format.
+`encoder_decoder_utils.py` provides a way to convert between tokenized format and textual ABC file format.
 
 
 ### 10) `./scripts/split_abc_tracks.py`
 
-Split multi-voice ABC files into individual per-track files by detecting `V:` sections, preserving the header, and writing one `track N.abc` per voice for easier playback and dataset verification (using `Starbound Composer` or any other ABC player).
+Split multi-voice ABC files into individual per-track files by detecting `V:` sections, preserving the header, and writing one `track N.abc` per voice for easier playback and dataset verification (using [Starbound Composer](https://www.starboundcomposer.com/) (note that it needs Starbound installed) or any other ABC player).
 
 
 ### 11) `./scripts/build_hf_dataset.py` (optional)
@@ -198,7 +203,7 @@ Clears all generated data from the pipeline, including results. Useful when the 
 
 ## 💡 Tips & Troubleshooting
 
-* **MuseScore CLI not found?**: See the `setup_softwares.sh` section and ensure `musescore` is correctly linked to the Musescore's installation directory. 
+* **MuseScore CLI not found?**: See the `setup_softwares.sh` section and ensure `musescore` is correctly linked to Musescore's installation directory. 
 * **midi2abc errors on certain files?**: That's expected for some MIDI variants; ensure `sanitize_midi.sh` ran; if a file still fails, the cleaner script may fall back to the original MIDI in a second pass. 
 * **Linux**: See the **Platform & Compatibility section** above.
 
@@ -211,7 +216,7 @@ Clears all generated data from the pipeline, including results. Useful when the 
 - [ ] Explore further applications...
 
 
-## 🪪 Licensing
+## 🪪 License
 
 - **Code (this repository):** MIT License; see [LICENSE](./LICENSE).
 - **Important:** This repo contains *code only*. Any **datasets** or **trained models** produced by this code may be subject to additional restrictions from their upstream sources (e.g., Million Song Dataset / Echo Nest terms, Tagtraum, TU Wien MAGD/MASD/TopMAGD, Lakh MIDI Dataset); consult their respective licenses if you use resulting data/models.
@@ -243,13 +248,18 @@ Clears all generated data from the pipeline, including results. Useful when the 
 
 ## 👥 Author Contributions
 
-- **Julien Zébic** — [@Gapagapi1] — Project Motivation; Early Dataset Exploration; Conceptualization; Data Investigation; Software; Midi/ABC Pipeline; Instrument Categorization; Writing & Publication
-  *Designed and implemented the end-to-end data pipeline (scheduler & parallel execution, MIDI to ABC conversion/cleaning, MuseScore sanitization & metadata verification / matching, MusicXML path exploration, ABC tokenization, refactors); Ran experiments up to last full run and prepared the final pipeline result.*
+- **Julien Zébic** — [@Gapagapi1] — Project Motivation; Early Dataset Exploration; Conceptualization; Data Investigation; Software (Midi/MusicXML/ABC/Parquet Pipeline); General MIDI Instrument Categorization; Writing & Publication
 
-- **Thomas Leguéré** — [@ThomasLeguere] — Early Dataset Exploration; Conceptualization; Data Investigation; Software; Genre Handling
-  *Implemented track/genre matching and mapping (including label balancing); built matching utilities, labelled-data sorting, and related work for the genre pipeline.*
+  *Designed and implemented the end-to-end data pipeline (scheduler & parallel execution, MIDI to ABC conversion/cleaning, MuseScore sanitization & metadata verification / matching, MusicXML path exploration, ABC tokenization, Parquet dataset conversion); Ran experiments up to last full run and prepared the final pipeline result.*
+
+
+- **Thomas Leguéré** — [@ThomasLeguere] — Early Dataset Exploration; Conceptualization; Data Investigation; Software (Genre Handling)
+
+  *Implemented track/genre matching and mapping (including label balancing); built matching utility (`./scripts/match_tracks.py`), and related work for the genre handling part of the pipeline.*
+
 
 - **Loïs Bréant** — [@loisBreant] — Data Investigation; Data Visualization
+
   *Implemented data rendering utilities and results used during conceptualization.*
 
 
