@@ -15,6 +15,8 @@ OUT_DIR = Path("./data")
 SHARD_ROWS = 500_000  # adjust based on RAM / size
 WRITE_ABC = True  # set False if you only want tokens
 
+# --- CODE ---
+
 INSTRUMENTS = ["Piano", "Organ", "Guitar", "Bass", "String", "Vocal", "Brass", "Reed", "Pipe", "Synth Lead", "Synth Pad", "Synth Effect", "Pitched Percussion", "Percussive", "Sound Effect", "Percussion Channel"]
 instrument_label = ClassLabel(names=INSTRUMENTS)
 instrument_to_id = {c:i for i,c in enumerate(INSTRUMENTS)}
@@ -102,6 +104,7 @@ def write_parquet_shards(rows_iter, out_path):
         pq.write_table(table, out_path / f"part-{part_idx:04d}.parquet", compression="zstd")
 
 if __name__ == "__main__":
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
     print("Writing tokens parquet files...")
     write_parquet_shards(iter_dataset(TOK_ROOT, "voice_*.pkl", VOICE_RE, False), OUT_DIR / "abc_tokens")
     if WRITE_ABC:
