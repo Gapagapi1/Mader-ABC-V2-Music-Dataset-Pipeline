@@ -9,7 +9,6 @@ echo "Edit this script with the correct path first and appropriate functions cal
 exit 1
 
 # Linux
-# NOT TESTED, TODO
 setup_softwares_linux () {
     cd archives
 
@@ -19,11 +18,17 @@ setup_softwares_linux () {
     cd softwares
 
     unzip '../archives/abcMIDI-2025.02.16.zip'
-    echo 'You now have to build abcMidi softwares.'
 
     cd - > /dev/null
 
-    ln -s '/path/to/musescore/binary/parent/directory' './softwares/musescore'
+    cd softwares/abcmidi
+
+    make
+
+    cd - > /dev/null
+
+    mkdir -p './softwares/musescore'
+    ln -s '/path/to/musescore/binary/parent/directory' './softwares/musescore/musescore'
 }
 
 # Windows
