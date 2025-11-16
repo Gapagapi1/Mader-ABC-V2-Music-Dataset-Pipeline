@@ -66,7 +66,7 @@ uv run ./scripts/split_abc_tracks.py
 
 # 2) Optionals
 # Build the Hugging Face Parquet dataset.
-uv run ./scripts/build_hf_dataset.py
+uv run ./scripts/build_parquet_dataset.py
 
 # Get the vocabulary of the token dataset.
 uv run ./scripts/all_tokens.py
@@ -178,7 +178,7 @@ Parse ABC files into per-voice token sequences (notes, chords, barlines, duratio
 Split multi-voice ABC files into individual per-track files by detecting `V:` sections, preserving the header, and writing one `track N.abc` per voice for easier playback and dataset verification (using [Starbound Composer](https://www.starboundcomposer.com/) (note that it needs Starbound installed) or any other ABC player).
 
 
-### 11) `./scripts/build_hf_dataset.py` (optional)
+### 11) `./scripts/build_parquet_dataset.py` (optional)
 
 Aggregate all processed MIDI-derived files into a unified Hugging Face compatible dataset by reading tokenized voices, ABC tracks, and genre labels, then exporting them as structured Parquet shards.
 

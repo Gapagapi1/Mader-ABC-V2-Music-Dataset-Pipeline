@@ -13,7 +13,8 @@ ABC_ROOT = Path("./midi/lmd_matched_flat_sanitized_abc_clean_split")
 GENRE_JSON = Path("./results/msd_trackid_to_genre.json")
 OUT_DIR = Path("./data")
 SHARD_ROWS = 500_000  # adjust based on RAM / size
-WRITE_ABC = True  # set False if you only want tokens
+WRITE_TEXTS = True  # set False if you don't want the textual corpus
+WRITE_TOKENS = True  # set False if you don't want the token corpus
 
 # --- CODE ---
 
@@ -27,6 +28,8 @@ genre_to_id = {g:i for i,g in enumerate(GENRES)}
 
 VOICE_RE = re.compile(r"voice_(\d+)\.pkl")
 TRACK_RE = re.compile(r"track (\d+)\.abc")
+
+MIDI2ABC_T_PATH_RE = re.compile(r"T: from .*lmd_matched_flat_sanitized")
 
 def iter_dataset(root: Path, glob_str: str, compiled_regex, is_abc_text_corpus: bool = True):
     with open(GENRE_JSON, "r", encoding="utf-8") as f:
@@ -59,6 +62,7 @@ def iter_dataset(root: Path, glob_str: str, compiled_regex, is_abc_text_corpus: 
                 try:
                     if is_abc_text_corpus:
                         content = path.read_text(encoding="utf-8")
+                        content = MIDI2ABC_T_PATH_RE.sub('T: from lmd_matched_flat_sanitized', content)
                     else:
                         with open(path, "rb") as f:
                              content = [str(t) for t in pickle.load(f)]
@@ -66,7 +70,7 @@ def iter_dataset(root: Path, glob_str: str, compiled_regex, is_abc_text_corpus: 
                     print(f"WARNING: Could not read '{path}'.")
                     continue
 
-                vm = voice_meta.get(str(voice_idx))
+                vm = voice_meta.get(str(voice_idx - 1) if is_abc_text_corpus else str(voice_idx))
                 if vm is None:
                     print(f"WARNING: Found invalid voice metadata ({voice_meta}).")
                     continue
@@ -105,10 +109,11 @@ def write_parquet_shards(rows_iter, out_path):
 
 if __name__ == "__main__":
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    print("Writing tokens parquet files...")
-    write_parquet_shards(iter_dataset(TOK_ROOT, "voice_*.pkl", VOICE_RE, False), OUT_DIR / "abc_tokens")
-    if WRITE_ABC:
-        print("Writing abc voice parquet files...")
+    if WRITE_TOKENS:
+        print("Writing token parquet files...")
+        write_parquet_shards(iter_dataset(TOK_ROOT, "voice_*.pkl", VOICE_RE, False), OUT_DIR / "abc_tokens")
+    if WRITE_TEXTS:
+        print("Writing text parquet files...")
         write_parquet_shards(iter_dataset(ABC_ROOT, "track *.abc", TRACK_RE, True), OUT_DIR / "abc_texts")
     print("Done. Parquet shards in ./data/")
 
